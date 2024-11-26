@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ReactSVG } from "react-svg";
 import { IoIosArrowDown } from "react-icons/io";
-import logo from "../../../assets/daoit.svg";
-import help from "../../../assets/help.svg";
-import more from "../../../assets/more.svg";
-import user from "../../../assets/user.svg";
+import logo from "../../assets/daoit.svg";
+import help from "../../assets/help.svg";
+import more from "../../assets/more.svg";
+import user from "../../assets/user.svg";
 
 const Community = () => {
   const navigationLinks = [

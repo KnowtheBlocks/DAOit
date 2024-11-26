@@ -1,11 +1,11 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Header from "./component/layout/header";
-import Community from "./component/pages/community/communityPage";
 import Doc from "./component/pages/documentationPage";
 import Footer from "./component/layout/footer";
 import "./App.css";
 import Works from "./component/pages/documentation/howItWorks";
+import Community from "./component/pages/communityPage";
 
 const App = () => {
   return (

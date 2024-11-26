@@ -19,7 +19,7 @@ const Header = () => {
       <nav className="flex space-x-6">
         <Link
           to="/developers"
-          className={`hover:underline hover:text-black ${
+          className={`hover:border-b-2 hover:text-black ${
             isActive("/developers") ? "border-b-2 border-black" : ""
           }`}
         >
@@ -27,7 +27,7 @@ const Header = () => {
         </Link>
         <Link
           to="/community"
-          className={`hover:underline hover:text-black ${
+          className={`hover:border-b-2 hover:text-black ${
             isActive("/community") ? "border-b-2 border-black" : ""
           }`}
         >
@@ -35,7 +35,7 @@ const Header = () => {
         </Link>
         <Link
           to="/how-it-works"
-          className={`hover:underline hover:text-black ${
+          className={`hover:border-b-2 hover:text-black ${
             isActive("/how-it-works") ? "border-b-2 border-black" : ""
           }`}
         >
