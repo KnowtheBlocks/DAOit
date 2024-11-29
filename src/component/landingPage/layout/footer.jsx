@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ReactSVG } from "react-svg";
-import logo from "../../assets/logo.svg";
+import logo from "../../../assets/logo.svg";
 import { FaGithub } from "react-icons/fa";
 import { FaDiscord, FaSquareXTwitter } from "react-icons/fa6";
 

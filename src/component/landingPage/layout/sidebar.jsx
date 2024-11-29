@@ -36,7 +36,6 @@ const Sidebar = () => {
   return (
     <div className="w-64 border-r border-gray-200 p-4 overflow-y-auto">
       <ul className="space-y-4">
-        {/* Introduction Section */}
         <li>
           <div
             className="flex justify-between items-center cursor-pointer"
@@ -60,7 +59,6 @@ const Sidebar = () => {
           )}
         </li>
 
-        {/* Smart Contract Modules Section */}
         <li>
           <div
             className="flex justify-between items-center cursor-pointer"
@@ -96,7 +94,6 @@ const Sidebar = () => {
           )}
         </li>
 
-        {/* Resources Section */}
         <li>
           <div
             className="flex justify-between items-center cursor-pointer"

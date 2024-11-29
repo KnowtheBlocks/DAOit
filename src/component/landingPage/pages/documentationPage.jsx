@@ -3,7 +3,7 @@ import Sidebar from "../layout/sidebar";
 
 function Doc() {
   return (
-    <div className="flex flex-1 overflow-hidden text-sm">
+    <div className="flex flex-1 overflow-hidden text-sm px-10">
       <Sidebar />
       <div className="flex-1  pt-8 pr-64 pl-10  text-justify py-24  ">
         <h1 className="text-[40px] font-bold  ">DAOit Documentation</h1>

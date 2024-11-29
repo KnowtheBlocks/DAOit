@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ReactSVG } from "react-svg";
 import { IoIosArrowDown } from "react-icons/io";
-import logo from "../../assets/daoit.svg";
-import help from "../../assets/help.svg";
-import more from "../../assets/more.svg";
-import user from "../../assets/user.svg";
+import logo from "../../../assets/daoit.svg";
+import help from "../../../assets/help.svg";
+import more from "../../../assets/more.svg";
+import user from "../../../assets/user.svg";
 
 const Community = () => {
   const navigationLinks = [
@@ -32,7 +32,7 @@ const Community = () => {
     },
   ];
   return (
-    <div className=" flex flex-col items-center text-center pt-8 lg:px-28">
+    <div className=" flex flex-col items-center text-center pt-8 lg:px-28 px-10">
       <section className="p-8  ">
         <h1 className="text-3xl font-bold text-gray-800">
           Join the Daoit Community
