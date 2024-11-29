@@ -47,7 +47,7 @@ const cards = [
 ];
 
 const Works = () => (
-  <div className="flex flex-col item-center pt-8 px-14   ">
+  <div className="flex flex-col item-center pt-8 px-14    ">
     <div className=" mb-8">
       <h1 className="text-3xl font-bold text-gray-800">
         Learn more on how DAOit works Today!
