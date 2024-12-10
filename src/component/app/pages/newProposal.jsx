@@ -2,9 +2,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FaMagic } from "react-icons/fa";
 
-// Zod schema for validation
+// Updated Zod schema with new fields
 const proposalSchema = z.object({
+  userAddress: z.string().nonempty("User address is required"),
+  proposalId: z.string().nonempty("Proposal ID is required"),
   proposalTitle: z
     .string()
     .nonempty("Proposal title is required")
@@ -13,7 +16,8 @@ const proposalSchema = z.object({
     .string()
     .nonempty("Description is required")
     .min(10, "Description must be at least 10 characters long"),
-  extraDescription: z.string().optional(),
+  startDate: z.string().nonempty("Start date is required"),
+  endDate: z.string().nonempty("End date is required"),
   proposalSettings: z.string().nonempty("Please select a proposal setting"),
 });
 
@@ -38,20 +42,75 @@ const NewProposal = () => {
           New Proposal
         </h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* User Address Field */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Proposal title
+            <label htmlFor="userAddress" className="block text-gray-700 font-medium mb-2">
+              User Address
             </label>
             <input
+              id="userAddress"
               type="text"
-              placeholder="Write something"
-              {...register("proposalTitle")}
+              {...register("userAddress")}
               className={`bg-white w-full p-3 border ${
-                errors.proposalTitle
+                errors.userAddress
                   ? "border-red-500 focus:ring-red-200"
                   : "border-gray-300 focus:ring-yellow-200"
               } rounded-lg focus:outline-none`}
             />
+            {errors.userAddress && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.userAddress.message}
+              </p>
+            )}
+          </div>
+
+          {/* Proposal ID Field */}
+          <div>
+            <label htmlFor="proposalId" className="block text-gray-700 font-medium mb-2">
+              Proposal ID
+            </label>
+            <input
+              id="proposalId"
+              type="text"
+              {...register("proposalId")}
+              className={`bg-white w-full p-3 border ${
+                errors.proposalId
+                  ? "border-red-500 focus:ring-red-200"
+                  : "border-gray-300 focus:ring-yellow-200"
+              } rounded-lg focus:outline-none`}
+            />
+            {errors.proposalId && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.proposalId.message}
+              </p>
+            )}
+          </div>
+
+          {/* Proposal Title Field */}
+          <div>
+            <label htmlFor="proposalTitle" className="block text-gray-700 font-medium mb-2">
+              Proposal Title
+            </label>
+            <div className="relative">
+              <input
+                id="proposalTitle"
+                type="text"
+                placeholder="Write something"
+                {...register("proposalTitle")}
+                className={`bg-white w-full p-3 pr-10 border ${
+                  errors.proposalTitle
+                    ? "border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:ring-yellow-200"
+                } rounded-lg focus:outline-none`}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-yellow-500"
+                onClick={() => console.log('AI Magic for title')}
+              >
+                <FaMagic className="w-4 h-4" />
+              </button>
+            </div>
             {errors.proposalTitle && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.proposalTitle.message}
@@ -59,20 +118,31 @@ const NewProposal = () => {
             )}
           </div>
 
+          {/* Description Field */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
+            <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
               Description
             </label>
-            <textarea
-              placeholder="Write something"
-              rows={4}
-              {...register("description")}
-              className={`bg-white w-full p-3 border ${
-                errors.description
-                  ? "border-red-500 focus:ring-red-200"
-                  : "border-gray-300 focus:ring-yellow-200"
-              } rounded-lg focus:outline-none`}
-            ></textarea>
+            <div className="relative">
+              <textarea
+                id="description"
+                placeholder="Write something"
+                rows={4}
+                {...register("description")}
+                className={`bg-white w-full p-3 pr-10 border ${
+                  errors.description
+                    ? "border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:ring-yellow-200"
+                } rounded-lg focus:outline-none`}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-3 text-gray-400 hover:text-yellow-500"
+                onClick={() => console.log('AI Magic for description')}
+              >
+                <FaMagic className="w-4 h-4" />
+              </button>
+            </div>
             {errors.description && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.description.message}
@@ -80,65 +150,60 @@ const NewProposal = () => {
             )}
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Description
-            </label>
-            <textarea
-              placeholder="Write something"
-              rows={4}
-              {...register("extraDescription")}
-              className="bg-white w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-yellow-200"
-            ></textarea>
-          </div>
-        </form>
-      </div>
+          {/* Date Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="startDate" className="block text-gray-700 font-medium mb-2">
+                Start Date
+              </label>
+              <input
+                id="startDate"
+                type="date"
+                {...register("startDate")}
+                className={`bg-white w-full p-3 border ${
+                  errors.startDate
+                    ? "border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:ring-yellow-200"
+                } rounded-lg focus:outline-none`}
+              />
+              {errors.startDate && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.startDate.message}
+                </p>
+              )}
+            </div>
 
-      <div className="w-full lg:w-1/3">
-        <div className="space-y-6">
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Proposal settings
-            </label>
-            <select
-              {...register("proposalSettings")}
-              className={`bg-white w-full p-3 border ${
-                errors.proposalSettings
-                  ? "border-red-500 focus:ring-red-200"
-                  : "border-gray-300 focus:ring-yellow-200"
-              } rounded-lg focus:outline-none`}
-            >
-              <option value="">Voting system</option>
-            </select>
-            {errors.proposalSettings && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.proposalSettings.message}
-              </p>
-            )}
+            <div>
+              <label htmlFor="endDate" className="block text-gray-700 font-medium mb-2">
+                End Date
+              </label>
+              <input
+                id="endDate"
+                type="date"
+                {...register("endDate")}
+                className={`bg-white w-full p-3 border ${
+                  errors.endDate
+                    ? "border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:ring-yellow-200"
+                } rounded-lg focus:outline-none`}
+              />
+              {errors.endDate && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.endDate.message}
+                </p>
+              )}
+            </div>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-300">
-            <h2 className="text-gray-700 font-medium mb-4">Timeline</h2>
-            <p className="text-gray-600 text-sm">
-              <p>Start</p>
-            </p>
-            From - <strong>November 4, 2024.</strong>
-            <p className="text-gray-600 text-sm">
-              <p>End</p>{" "}
-              <p>
-                To - <strong> November 7, 2024.</strong>
-              </p>
-            </p>
-          </div>
           <div className="text-center">
             <button
               type="submit"
               className="w-full py-3 px-4 bg-[#FFE8AE] text-white font-medium rounded-lg hover:bg-yellow-600"
             >
-              Continue
+              Submit Proposal
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
