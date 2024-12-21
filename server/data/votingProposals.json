@@ -1,0 +1,26 @@
+[
+  {
+    "proposalId": "prop_5c62_m4xhf2p0_f3m",
+    "votes": {
+      "yes": 1,
+      "no": 1,
+      "abstain": 0
+    },
+    "voters": {
+      "0xEAE65c628996F47914f37937d7bDDbCCB53f8FC2": {
+        "vote": "yes",
+        "timestamp": "2024-12-21T01:31:24.109Z"
+      },
+      "0x964DEAc44d657f3e88087FC952e1558359f04286": {
+        "vote": "no",
+        "timestamp": "2024-12-21T01:33:05.289Z"
+      }
+    },
+    "scores": {
+      "yes": 1,
+      "no": 1,
+      "abstain": 0
+    },
+    "totalScore": 2
+  }
+]

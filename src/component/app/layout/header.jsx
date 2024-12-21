@@ -1,17 +1,27 @@
-import React, { useState } from "react";
-import { IoMdNotifications } from "react-icons/io";
-import { Link } from "react-router-dom";
-import { ReactSVG } from "react-svg";
-import Modal from "../../utilies/modal";
-import logo from "../../../assets/logo-white.svg";
-import coin from "../../../assets/coinbase.svg";
-import meta from "../../../assets/metamask.svg";
-import Phantom from "../../../assets/phantom.svg";
+import React, { useState, useEffect } from "react";
+import profile from "../../../assets/profile.png";
+import { useGlobalStore } from "../../../main";
 
-function Header({ user, profile }) {
-  const [activeModal, setActiveModal] = useState(null);
+function Header() {
+  const [username, setUsername] = useState("Loading...");
+  const { walletAddress } = useGlobalStore();
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  const closeModal = () => setActiveModal(null);
+  // Poll for wallet address until available
+  useEffect(() => {
+    const pollInterval = setInterval(() => {
+      if (walletAddress) {
+        // Format wallet address: show first 6 and last 4 characters
+        const formattedAddress = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
+        setUsername(formattedAddress);
+        setIsLoaded(true);
+        clearInterval(pollInterval);
+      }
+    }, 1000); // Poll every second
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(pollInterval);
+  }, [walletAddress]);
 
   return (
     <div className="mx-20 mt-10 p-5 gap-10 rounded-lg  mb-8 bg-[#373434]">
@@ -20,7 +30,11 @@ function Header({ user, profile }) {
           <div className="flex items-center gap-2">
             <img src={profile} alt="User" className="w-10 h-10 rounded-full" />
             <div>
-              <h2 className="text-white text-lg font-semibold">{user}</h2>
+            <h2 className="text-white text-lg font-semibold">
+              {isLoaded ? username : (
+                <div className="animate-pulse bg-gray-600 h-6 w-32 rounded"></div>
+              )}
+          </h2>
             </div>
           </div>
           <div className="flex items-center space-x-4">
