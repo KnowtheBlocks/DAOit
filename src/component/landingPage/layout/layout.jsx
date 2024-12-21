@@ -5,14 +5,12 @@ import Footer from "./footer";
 
 function LandingLayout() {
   return (
-    <div className="flex flex-col bg-header-pattern bg-no-repeat bg-right-top ">
-      <div className="">
-        <Header />
-        <div className="flex-grow">
-          <Outlet />
-        </div>
-        <Footer />
-      </div>
+    <div className="min-h-screen flex flex-col bg-header-pattern bg-no-repeat bg-right-top">
+      <Header />
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+      <Footer />
     </div>
   );
 }
