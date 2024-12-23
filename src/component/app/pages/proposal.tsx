@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import Modal from "../../utilies/modal";
+import { IoIosArrowRoundBack } from "react-icons/io";
+import ProgressBar from "../../utilies/progressBar";
+import VoteItem from "../../utilies/voteCard";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ProposalPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { activity } = location.state || {};
   const [activeModal, setActiveModal] = useState(null);
 
   const openModal = (modalType) => {
@@ -11,11 +19,29 @@ const ProposalPage = () => {
   const closeModal = () => {
     setActiveModal(null);
   };
+  const data = [
+    { label: "Yes", credits: 235, percentage: 56 },
+    { label: "No", credits: 5, percentage: 56 },
+    { label: "Abstain", credits: 102, percentage: 56 },
+  ];
+  const votes = [
+    { label: "Yes", address: "0x4cee...b541", credits: 235 },
+    { label: "Yes", address: "0x4cee...b541", credits: 235 },
+    { label: "Yes", address: "0x4cee...b541", credits: 235 },
+    { label: "Yes", address: "0x4cee...b541", credits: 235 },
+    { label: "Yes", address: "0x4cee...b541", credits: 235 },
+  ];
 
   return (
     <div className="flex flex-col md:flex-row gap-6">
       <div className="flex-1">
-        <div className="flex justify-between items-center mb-4">
+        <div className=" mb-4">
+          <div
+            onClick={() => navigate(-1)}
+            className="p-2 h-fit w-fit border border-gray-300 rounded-full shadow-md hover:bg-gray-200 my-5"
+          >
+            <IoIosArrowRoundBack size={25} />
+          </div>
           <h2 className="text-2xl font-semibold text-yellow-600">
             Proposal settings
           </h2>
@@ -34,6 +60,7 @@ const ProposalPage = () => {
             <div className="text-sm text-gray-600 mt-2">
               <div className="flex gap-4">
                 <p>
+                  Created-
                   <span className="font-semibold">November 4, 2024</span>
                 </p>
                 <p>
@@ -94,76 +121,71 @@ const ProposalPage = () => {
       </div>
 
       <div className="w-full md:w-1/3  p-6  ">
-        <div className="border  p-4 rounded-lg flex flex-col items-center ">
-          <div className="flex justify-between items-center pb-4 ">
-            <div className="space-x-4">
-              <button
-                onClick={() => openModal("yes")}
-                className="text-sm border-[#60CF0B] hover:bg-[#4EA20E] text-green-700 py-1 px-4 rounded-full"
-              >
-                Yes
-              </button>
-              <button
-                onClick={() => openModal("no")}
-                className="text-sm hover:bg-orange-700 border-[#E27525] text-red-700 py-1 px-4 rounded-full"
-              >
-                No
-              </button>
-              <button
-                onClick={() => openModal("abstain")}
-                className="text-sm hover:bg-orange-600 border-[#E27525] text-orange-700 py-1 px-4 rounded-full"
-              >
-                Abstain
+        {!activity && (
+          <div className="border  p-4 rounded-lg flex flex-col items-center ">
+            <div className="flex justify-between items-center pb-4 ">
+              <div className="space-x-4">
+                <button
+                  onClick={() => openModal("yes")}
+                  className="text-sm border-[#60CF0B] hover:bg-[#4EA20E] text-green-700  py-4 px-8 rounded-[14px]"
+                >
+                  Yes
+                </button>
+                <button
+                  onClick={() => openModal("no")}
+                  className="text-sm hover:bg-orange-700 border-[#E27525] text-red-700  py-4 px-8 rounded-[14px]"
+                >
+                  No
+                </button>
+                <button
+                  onClick={() => openModal("abstain")}
+                  className="text-sm hover:bg-orange-600 border-[#E27525] text-orange-700 py-4 px-4 rounded-[14px]"
+                >
+                  Abstain
+                </button>
+              </div>
+            </div>
+            <div>
+              <button className="w-full text-[#777777] bg-[#F0E2B3] py-4 px-32 rounded-lg">
+                Vote
               </button>
             </div>
           </div>
-          <div>
-            <button className="w-full text-white bg-yellow-600 py-1 px-32 rounded-lg">
-              Vote
-            </button>
+        )}
+
+        <div className="my-10">
+          <h2 className="text-[20px] text-[#BA8100] font-medium mb-5">
+            Current results
+          </h2>
+          <div className="max-w-md mx-auto px-4 py-6 border border-[#E6E6E6] rounded-lg shadow-lg">
+            {data.map((item, index) => (
+              <div key={index} className="mb-6 last:mb-0">
+                <ProgressBar
+                  label={item.label}
+                  credits={item.credits}
+                  percentage={item.percentage}
+                />
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* <div className="mb-6">
-          <h2 className="text-lg font-medium">Current results</h2>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between text-sm">
-                <span>Yes</span>
-                <span>56%</span>
-              </div>
-              <div className="h-2 bg-green-500 rounded"></div>
-            </div>
-            <div>
-              <div className="flex justify-between text-sm">
-                <span>No</span>
-                <span>56%</span>
-              </div>
-              <div className="h-2 bg-red-500 rounded"></div>
-            </div>
-            <div>
-              <div className="flex justify-between text-sm">
-                <span>Abstain</span>
-                <span>56%</span>
-              </div>
-              <div className="h-2 bg-gray-400 rounded"></div>
-            </div>
-          </div>
-        </div> */}
-
         <div>
           <h2 className="text-lg font-medium mb-4">Votes (66)</h2>
-          <ul className="space-y-2">
-            {[...Array(10)].map((_, index) => (
-              <li
+          <div className="max-w-md mx-auto px-4 py-6 border border-[#E6E6E6] rounded-lg shadow-lg">
+            <div className="flex justify-end p-4">
+              <div className="w-5 h-5 bg-black rotate-45 transform -translate-y-1/2"></div>
+            </div>
+            {votes.map((vote, index) => (
+              <VoteItem
                 key={index}
-                className="flex justify-between text-sm bg-gray-100 p-2 rounded"
-              >
-                <span>0x4cee...b541</span>
-                <span className="font-medium text-gray-600">235 Credits</span>
-              </li>
+                label={vote.label}
+                imageSrc="https://via.placeholder.com/40" // Placeholder image
+                address={vote.address}
+                credits={vote.credits}
+              />
             ))}
-          </ul>
+          </div>
         </div>
       </div>
 

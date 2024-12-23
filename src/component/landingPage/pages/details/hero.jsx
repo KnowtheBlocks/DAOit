@@ -27,14 +27,11 @@ const HeroSection = () => {
             Collaborative Decision-making Process.
           </p>
           <div className="mt-6 flex justify-center gap-4">
-            {/* <Link to="/app"> */}
-            <button
-              className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded"
-              onClick={() => setActiveModal("wallet")}
-            >
-              Launch App
-            </button>
-            {/* </Link> */}
+            <Link to="/home">
+              <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded">
+                Launch App
+              </button>
+            </Link>
             <button className=" flex items-center gap-2 py-2 px-4 rounded border-yellow-600">
               <p>Explore Proposal</p>
               <ReactSVG src={arrow} />
@@ -54,9 +51,9 @@ const HeroSection = () => {
         onClose={closeModal}
         title="Choose a wallet"
       >
-        <div className="space-y-3">
+        <div className="flex flex-col justify-center items-center">
           <Link to="/app">
-            <button className="flex items-center justify-between w-full px-4 py-2 bg-[#494445] my-1 rounded-lg">
+            <button className="flex items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
               <span className="flex gap-2 items-center">
                 <ReactSVG src={coin} />
                 Coinbase
@@ -64,14 +61,14 @@ const HeroSection = () => {
             </button>
           </Link>
           <Link to="/app">
-            <button className="flex items-center justify-between w-full px-4 py-2 bg-[#494445] my-1 rounded-lg">
+            <button className="flex items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
               <span className="flex gap-2 items-center">
                 <ReactSVG src={meta} /> Metamask
               </span>
             </button>
           </Link>
           <Link to="/app">
-            <button className="flex items-center justify-between w-full px-4 py-2 bg-[#494445] my-1 rounded-lg">
+            <button className="flex items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
               <span className="flex gap-2 items-center">
                 <ReactSVG src={Phantom} /> Phantom
               </span>
