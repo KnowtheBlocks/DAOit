@@ -3,6 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import { ReactSVG } from "react-svg";
 import logo from "../../../assets/logo.svg";
 import Modal from "../../utilies/modal";
+import coin from "../../../assets/coinbase.svg";
+import meta from "../../../assets/metamask.svg";
+import Phantom from "../../../assets/phantom.svg";
 
 const Header = () => {
   const location = useLocation();
@@ -46,29 +49,40 @@ const Header = () => {
         </Link>
       </nav>
 
-      {/* <Link to="/app"> */}
       <button
         onClick={() => setActiveModal("wallet")}
         className="px-4 py-2 bg-black text-white rounded-md hover:bg-blue-700"
       >
         Connect Wallet
       </button>
-      {/* </Link> */}
       <Modal
         isOpen={activeModal === "wallet"}
         onClose={closeModal}
         title="Choose a wallet"
       >
-        <div className="space-y-3">
-          <button className="flex items-center justify-between w-full px-4 py-2 bg-gray-700 rounded-lg">
-            <span>🟦 Coinbase</span>
-          </button>
-          <button className="flex items-center justify-between w-full px-4 py-2 bg-gray-700 rounded-lg">
-            <span>🦊 Metamask</span>
-          </button>
-          <button className="flex items-center justify-between w-full px-4 py-2 bg-gray-700 rounded-lg">
-            <span>👻 Phantom</span>
-          </button>
+        <div className="flex flex-col justify-center items-center">
+          <Link to="/app">
+            <button className="flex items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
+              <span className="flex gap-2 items-center">
+                <ReactSVG src={coin} />
+                Coinbase
+              </span>
+            </button>
+          </Link>
+          <Link to="/app">
+            <button className="flex items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
+              <span className="flex gap-2 items-center">
+                <ReactSVG src={meta} /> Metamask
+              </span>
+            </button>
+          </Link>
+          <Link to="/app">
+            <button className="flex items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
+              <span className="flex gap-2 items-center">
+                <ReactSVG src={Phantom} /> Phantom
+              </span>
+            </button>
+          </Link>
         </div>
       </Modal>
     </header>

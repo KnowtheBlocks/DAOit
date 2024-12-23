@@ -1,8 +1,8 @@
 import React from "react";
 import Card from "../../../utilies/card";
 import vote from "../../../../assets/vote.svg";
-import collaborate from "../../../../assets/collaboration.svg";
-import wallet from "../../../../assets/wallet.svg";
+import collaborate from "../../../../assets/colab.svg";
+import wallet from "../../../../assets/Group 17.svg";
 import global from "../../../../assets/global.svg";
 import { ReactSVG } from "react-svg";
 

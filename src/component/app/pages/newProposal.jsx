@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { IoIosArrowRoundBack } from "react-icons/io";
+import { Link, useNavigate } from "react-router-dom";
+import Modal from "../../utilies/modal";
+import { TiTickOutline } from "react-icons/ti";
 
-// Zod schema for validation
 const proposalSchema = z.object({
   proposalTitle: z
     .string()
@@ -25,18 +28,29 @@ const NewProposal = () => {
   } = useForm({
     resolver: zodResolver(proposalSchema),
   });
+  const [activeModal, setActiveModal] = useState(null);
+  const navigate = useNavigate();
 
   const onSubmit = (data) => {
     console.log("Form Submitted:", data);
-    // Handle your form submission logic here
+    setActiveModal("success");
   };
 
+  const closeModal = () => setActiveModal(null);
   return (
     <div className="flex flex-col lg:flex-row gap-8">
       <div className="flex-1">
-        <h1 className="text-2xl font-semibold text-yellow-500 mb-6">
-          New Proposal
-        </h1>
+        <div className="flex gap-2 items-center mb-6">
+          <div
+            className="p-2 h-fit border border-gray-300 rounded-full shadow-md hover:bg-gray-200"
+            onClick={() => navigate(-1)}
+          >
+            <IoIosArrowRoundBack size={25} />
+          </div>
+          <h1 className="text-2xl font-semibold text-yellow-500 ">
+            New Proposal
+          </h1>
+        </div>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <label className="block text-gray-700 font-medium mb-2">
@@ -108,7 +122,8 @@ const NewProposal = () => {
                   : "border-gray-300 focus:ring-yellow-200"
               } rounded-lg focus:outline-none`}
             >
-              <option value="">Voting system</option>
+              <option value="Voting system">Voting system</option>
+              <option value="Quadratic">Quadratic</option>
             </select>
             {errors.proposalSettings && (
               <p className="text-red-500 text-sm mt-1">
@@ -133,10 +148,28 @@ const NewProposal = () => {
           <div className="text-center">
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-[#FFE8AE] text-white font-medium rounded-lg hover:bg-yellow-600"
+              className="w-full py-3 px-4 bg-yellow-200 text-gray-800 font-medium rounded-lg hover:bg-gradient-to-r hover:from-yellow-400 hover:to-yellow-500 hover:text-white transition-colors duration-300"
             >
               Continue
             </button>
+            <Modal
+              isOpen={activeModal === "success"}
+              onClose={closeModal}
+              title="Proposal posted successfully "
+              color="bg-black"
+            >
+              <div className="flex flex-col justify-center items-center">
+                <div className="p-2 h-fit border rounded-full shadow-md bg-[#60CF0B]">
+                  <TiTickOutline />
+                </div>
+
+                <Link to="/app">
+                  <button className="flex bg-gradient-to-r from-[#F8B51C] to-[#FEE539] text-white  items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
+                    <span className="flex gap-2 items-center">View</span>
+                  </button>
+                </Link>
+              </div>
+            </Modal>
           </div>
         </div>
       </div>
