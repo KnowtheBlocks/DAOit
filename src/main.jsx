@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { ThirdwebProvider, ConnectButton, useActiveAccount, useWalletBalance } from "thirdweb/react";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { Ethereum, Goerli } from "@thirdweb-dev/chains";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaCopy } from "react-icons/fa";
 import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
@@ -39,7 +39,7 @@ export const useGlobalStore = create((set) => ({
 }));
 
 function WalletButton() {
-  const [showSensitiveInfo, setShowSensitiveInfo] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const account = useActiveAccount();
   console.log("👤 Active Account:", account?.address);
 
@@ -50,7 +50,7 @@ function WalletButton() {
   });
   console.log("💰 Wallet Balance:", isLoading ? "Loading..." : balance?.displayValue);
 
-  const { setWalletInfo, userId } = useGlobalStore();
+  const { setWalletInfo } = useGlobalStore();
 
   // Update global wallet info when account changes
   React.useEffect(() => {
@@ -58,47 +58,53 @@ function WalletButton() {
     setWalletInfo(account?.address || null);
   }, [account?.address, setWalletInfo]);
 
-  const toggleSensitiveInfo = () => setShowSensitiveInfo(!showSensitiveInfo);
+  const toggleMinimize = () => setIsMinimized(!isMinimized);
 
-  const maskText = (text) => "•".repeat(text?.length || 0);
+  const copyAddress = () => {
+    if (account?.address) {
+      navigator.clipboard.writeText(account.address);
+    }
+  };
+
+  if (isMinimized) {
+    return (
+      <button 
+        onClick={toggleMinimize}
+        className="fixed bottom-4 left-4 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50"
+        title="Expand wallet info"
+      >
+        <FaChevronUp className="text-gray-600" />
+      </button>
+    );
+  }
 
   return (
     <div className="fixed bottom-4 left-4">
-      <div className="bg-white rounded-lg shadow-lg p-4">
+      <div className="bg-white rounded-lg shadow-lg p-4 relative">
+        <div className="flex justify-between items-center mb-2">
+          <button
+            onClick={toggleMinimize}
+            className="p-2 text-gray-600 hover:text-gray-800"
+            title="Minimize wallet info"
+          >
+            <FaChevronDown />
+          </button>
+          {account && (
+            <button
+              onClick={copyAddress}
+              className="p-2 text-gray-600 hover:text-gray-800"
+              title="Copy wallet address"
+            >
+              <FaCopy />
+            </button>
+          )}
+        </div>
         <ConnectButton 
           client={client}
           wallets={wallets}
           theme="light"
           modalSize="wide"
         />
-        {account && (
-          <div className="mt-4 space-y-2 text-sm">
-            <div className="p-3 bg-gray-50 rounded relative">
-              <p className="font-medium">User ID</p>
-              <p className="text-gray-600">{showSensitiveInfo ? userId : maskText(userId)}</p>
-            </div>
-            <div className="p-3 bg-gray-50 rounded relative">
-              <p className="font-medium">Wallet Address</p>
-              <p className="text-gray-600 break-all">
-                {showSensitiveInfo ? account.address : maskText(account.address)}
-              </p>
-            </div>
-            {!isLoading && balance && (
-              <div className="p-3 bg-gray-50 rounded">
-                <p className="font-medium">Balance</p>
-                <p className="text-gray-600">
-                  {balance.displayValue} {balance.symbol}
-                </p>
-              </div>
-            )}
-            <button
-              onClick={toggleSensitiveInfo}
-              className="absolute top-2 right-2 p-2 text-gray-600 hover:text-gray-800"
-            >
-              {showSensitiveInfo ? <FaEyeSlash /> : <FaEye />}
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -100,109 +100,54 @@ app.post('/api/proposals', async (req, res) => {
   }
 });
 
-// POST endpoint to generate message for signing
-app.post('/api/vote/generate-message', async (req, res) => {
-  try {
-    const { address, proposalId } = req.body;
-
-    if (!address || !proposalId) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    // Generate a structured message for signing
-    const message = JSON.stringify({
-      proposalId,
-      voter: address,
-      action: 'vote',
-      timestamp: new Date().toISOString()
-    });
-
-    res.json({ message });
-  } catch (error) {
-    console.error('Error generating vote message:', error);
-    res.status(500).json({ error: 'Failed to generate vote message' });
-  }
-});
-
-// POST endpoint to submit a vote
+// Simplified POST endpoint to submit a vote
 app.post('/api/vote', async (req, res) => {
   try {
-    console.log('Received vote request:', req.body);
-    const { proposalId, voterAddress, vote } = req.body;
+    const { proposalId, userId, vote } = req.body;
     
-    if (!proposalId || !voterAddress || !vote) {
-      console.log('Missing fields:', { proposalId, voterAddress, vote });
+    if (!proposalId || !userId || !vote) {
       return res.status(400).json({ error: 'Missing required fields' });
-    }
-    
-    if (!['yes', 'no', 'abstain'].includes(vote)) {
-      console.log('Invalid vote type:', vote);
-      return res.status(400).json({ error: 'Invalid vote type' });
     }
     
     // Read current voting data
     const votingProposals = await readJsonFile(votingProposalsPath);
-    console.log('Current voting proposals:', votingProposals);
     
-    // Find the proposal's voting record
+    // Find or create voting record
     let votingRecord = votingProposals.find(p => p.proposalId === proposalId);
-    console.log('Found voting record:', votingRecord);
-    
-    // If no voting record exists, create one
     if (!votingRecord) {
-      console.log('Creating new voting record for proposal:', proposalId);
       votingRecord = {
         proposalId,
-        votes: { yes: 0, no: 0, abstain: 0 },
+        votes: { yes: 0, no: 0 },
         voters: {},
-        scores: { yes: 0, no: 0, abstain: 0 },
+        scores: { yes: 0, no: 0 },
         totalScore: 0
       };
       votingProposals.push(votingRecord);
     }
     
-    // Check if user has already voted
-    if (votingRecord.voters[voterAddress]) {
-      console.log('User has already voted:', voterAddress);
+    // Check if user has already voted using userId
+    if (votingRecord.voters[userId]) {
       return res.status(400).json({ error: 'User has already voted' });
     }
     
-    // Record the vote
+    // Record vote with userId
     votingRecord.votes[vote]++;
-    votingRecord.voters[voterAddress] = {
+    votingRecord.voters[userId] = {
       vote,
       timestamp: new Date().toISOString()
     };
-
-    // Calculate and update quadratic scores
-    votingRecord.scores[vote] = calculateQuadraticScore(votingRecord.votes[vote]);
-    votingRecord.totalScore = Object.values(votingRecord.scores).reduce((a, b) => a + b, 0);
-    
-    console.log('Updated voting record:', votingRecord);
-    
-    // Update the voting record in the array
-    const recordIndex = votingProposals.findIndex(p => p.proposalId === proposalId);
-    if (recordIndex !== -1) {
-      votingProposals[recordIndex] = votingRecord;
-    }
     
     // Save updated voting data
     await writeJsonFile(votingProposalsPath, votingProposals);
-    console.log('Saved voting proposals:', await readJsonFile(votingProposalsPath));
     
     res.json({ 
       message: 'Vote recorded successfully',
-      scores: votingRecord.scores,
-      totalScore: votingRecord.totalScore,
-      votingRecord // Send back the full voting record for debugging
+      votes: votingRecord.votes,
+      totalVotes: Object.keys(votingRecord.voters).length
     });
   } catch (error) {
     console.error('Error recording vote:', error);
-    res.status(500).json({ 
-      error: 'Failed to record vote',
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
+    res.status(500).json({ error: 'Failed to record vote' });
   }
 });
 
@@ -224,7 +169,7 @@ app.get('/api/voting-proposals/:proposalId', async (req, res) => {
     const votingProposals = await readJsonFile(votingProposalsPath);
     const votingData = votingProposals.find(p => p.proposalId === proposalId) || {
       proposalId,
-      votes: { yes: 0, no: 0, abstain: 0 },
+      votes: { yes: 0, no: 0 },
       voters: {}
     };
     res.json(votingData);
@@ -271,6 +216,76 @@ app.put('/api/proposals/update-status', async (req, res) => {
   } catch (error) {
     console.error('Error updating proposal statuses:', error);
     res.status(500).json({ error: 'Failed to update proposal statuses' });
+  }
+});
+
+// Add these endpoints to handle voting
+
+// Get proposal by ID
+app.get('/api/proposals/:id', (req, res) => {
+  const { id } = req.params;
+  const proposals = JSON.parse(fs.readFileSync('./data/proposals.json'));
+  const proposal = proposals.find(p => p.proposalId === id);
+  
+  if (!proposal) {
+    return res.status(404).json({ error: 'Proposal not found' });
+  }
+  
+  res.json(proposal);
+});
+
+// Get voting data for a proposal
+app.get('/api/proposals/:id/votes', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const proposals = await readJsonFile(proposalsPath);
+    const proposal = proposals.find(p => p.proposalId === id);
+    
+    if (!proposal) {
+      return res.status(404).json({ error: 'Proposal not found' });
+    }
+    
+    // Return just the voter IDs
+    res.json(proposal.votes?.voterIds || []);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch voting data' });
+  }
+});
+
+// Submit a vote
+app.post('/api/proposals/:id/vote', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { voterAddress } = req.body;
+    
+    const proposals = await readJsonFile(proposalsPath);
+    const proposalIndex = proposals.findIndex(p => p.proposalId === id);
+    
+    if (proposalIndex === -1) {
+      return res.status(404).json({ error: 'Proposal not found' });
+    }
+    
+    // Initialize votes object if it doesn't exist
+    if (!proposals[proposalIndex].votes) {
+      proposals[proposalIndex].votes = {
+        voterIds: []
+      };
+    }
+    
+    // Check if user has already voted
+    if (proposals[proposalIndex].votes.voterIds.includes(voterAddress)) {
+      return res.status(400).json({ error: 'Already voted' });
+    }
+    
+    // Add voter to the list
+    proposals[proposalIndex].votes.voterIds.push(voterAddress);
+    
+    // Save updated proposals
+    await writeJsonFile(proposalsPath, proposals);
+    
+    res.json({ success: true, voters: proposals[proposalIndex].votes.voterIds });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to submit vote' });
   }
 });
 

@@ -9,7 +9,7 @@ import Layout from "./component/app/layout/layout";
 import Home from "./component/landingPage/pages/home";
 import "./App.css";
 import DashboardPage from "./component/app/pages/dashBoard";
-import ProposalPage from "./component/app/pages/proposal.jsx";
+import ProposalPage from "./component/app/pages/proposal";
 import NewProposal from "./component/app/pages/newProposal";
 
 // Initialize QueryClient
