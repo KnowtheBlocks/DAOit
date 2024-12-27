@@ -9,7 +9,7 @@ import { TiTickOutline } from "react-icons/ti";
 import { FaMagic } from "react-icons/fa";
 import { create } from "zustand";
 import { useGlobalStore } from "../../../main";
-import { signMessage } from "thirdweb/utils";
+import ReactMarkdown from "react-markdown";
 
 // Updated Zod schema with new fields
 const proposalSchema = z.object({
@@ -39,6 +39,8 @@ const NewProposal = () => {
   const walletAddress = useWalletStore((state) => state.walletAddress);
   const { walletAddress: globalWalletAddress, userId } = useGlobalStore();
   const [globalVariablesReady, setGlobalVariablesReady] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiSuggestion, setAiSuggestion] = useState(null);
 
   // Generate proposal ID based on user ID and timestamp
   const generateProposalId = (userId) => {
@@ -67,7 +69,7 @@ const NewProposal = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     reset,
     getValues,
     setValue
@@ -80,9 +82,16 @@ const NewProposal = () => {
       description: '',
       startDate: '',
       endDate: '',
-      proposalSettings: ''
-    }
+      proposalSettings: 'default'
+    },
+    mode: 'onChange'
   });
+
+  // Add truncateAddress function near the top of the component
+  const truncateAddress = (address) => {
+    if (!address) return 'No wallet connected';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
 
   // Update userAddress field and generate proposal ID when wallet address changes
   useEffect(() => {
@@ -94,94 +103,151 @@ const NewProposal = () => {
     }
   }, [globalWalletAddress, userId, setValue]);
 
-  const onSubmitSuccess = async (data) => {
-    setSubmitStatus({ loading: true, error: null });
-    
-    try {
-      // Sign message before submitting proposal
-      const message = `I am submitting a proposal with ID: ${data.proposalId}`;
-      
-      try {
-        await signMessage({
-          message,
-          privateKey: globalWalletAddress // Using wallet address as key
-        });
-      } catch (signError) {
-        throw new Error('Failed to sign proposal message');
-      }
+  const generateProposalStructure = async () => {
+    const title = getValues('proposalTitle');
+    const description = getValues('description');
 
-      const response = await fetch('/api/proposals', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save proposal');
-      }
-
-      console.log('Form submitted and saved successfully!');
-      console.log('Form data:', data);
-      
-      reset();
-      // Generate new proposal ID after successful submission
-      const newProposalId = generateProposalId(userId);
-      setValue('proposalId', newProposalId);
-      setSubmitStatus({ loading: false, error: null });
-      
-      alert('Proposal submitted successfully!');
-      
-    } catch (error) {
-      console.error('Error saving proposal:', error);
-      setSubmitStatus({ loading: false, error: error.message });
-      alert('Failed to save proposal. Please try again.');
+    // Only proceed if at least one field has content
+    if (!title && !description) {
+      alert('Please add a title or description first');
+      return;
     }
-  };
 
-  // Test button handler that sends data to server
-  const testFormValues = async () => {
-    const currentValues = getValues();
-    console.log('Current form values:', currentValues);
-    
+    setIsGenerating(true);
     try {
-      // Sign test message
-      const message = `Testing proposal with values: ${JSON.stringify(currentValues)}`;
+      console.log('Sending request to AI service with:', { title, description });
       
-      try {
-        await signMessage({
-          message,
-          privateKey: globalWalletAddress
-        });
-      } catch (signError) {
-        throw new Error('Failed to sign test message');
-      }
-
-      const response = await fetch('/api/proposals', {
+      const response = await fetch('https://api.craftthefuture.xyz/webhook/daoitaiproposal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...currentValues,
-          isTest: true // Flag to indicate test data
-        }),
+          title: title || '',
+          description: description || '',
+        })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send test data');
+        throw new Error('Failed to get AI suggestions');
       }
 
-      const result = await response.json();
-      console.log('Test data sent successfully:', result);
-      alert('Test data sent to server successfully!');
+      const data = await response.json();
+      console.log('AI Service Response:', data);
+
+      // Extract both title and structured proposal from the response
+      if (data.proposal_tittle && data.structured_proposal) {
+        setAiSuggestion({
+          title: data.proposal_tittle,
+          description: data.structured_proposal
+        });
+      } else {
+        console.warn('Invalid response format:', data);
+        alert('Invalid response format from AI service');
+      }
+    } catch (error) {
+      console.error('Error getting AI suggestions:', error);
+      alert('Failed to get AI suggestions. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // Add or update the helper function to check description length
+  const getDescriptionLength = (description) => {
+    return description?.length || 0;
+  };
+
+  const onSubmitSuccess = async (data) => {
+    console.log('🚀 onSubmitSuccess triggered');
+    console.log('Starting submission process...');
+    console.log('Form data received:', data);
+    setSubmitStatus({ loading: true, error: null });
+    
+    try {
+      console.log('Setting up headers...');
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", "Token fy0I9k6HrFPbciwBx9spI1JGN2pk0mcU");
+      myHeaders.append("Content-Type", "application/json");
+      console.log('Headers set:', Object.fromEntries(myHeaders.entries()));
+
+      // Map form values to Baserow fields using user_field_names=true format
+      const rawData = {
+        "Address": data.userAddress,
+        "Proposal Id": data.proposalId,
+        "Proposal Title": data.proposalTitle,
+        "Description": data.description,
+        "Start date": data.startDate,
+        "End date": data.endDate,
+        "Status": true,
+        "Summary": data.description.substring(0, 100) + "...",
+        "yes_count": 0,
+        "no_count": 0
+      };
+      console.log('Prepared data for Baserow:', rawData);
+      
+      const raw = JSON.stringify(rawData);
+      console.log('Stringified data:', raw);
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+      console.log('Request options prepared:', { ...requestOptions, headers: Object.fromEntries(myHeaders.entries()) });
+
+      console.log('Sending request to Baserow...');
+      const response = await fetch(
+        "https://api.baserow.io/api/database/rows/table/403203/?user_field_names=true", 
+        requestOptions
+      );
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+      
+      const result = await response.text();
+      console.log('Response body:', result);
+
+      if (!response.ok) {
+        throw new Error(`Baserow API error: ${response.status} - ${result}`);
+      }
+
+      console.log('Submission successful, resetting form...');
+      // Reset form and generate new proposal ID
+      reset();
+      const newProposalId = generateProposalId(userId);
+      setValue('proposalId', newProposalId);
+      setSubmitStatus({ loading: false, error: null });
+      
+      console.log('Redirecting to /app...');
+      // Redirect to /app after successful submission
+      window.location.href = '/app';
       
     } catch (error) {
-      console.error('Error sending test data:', error);
-      alert('Failed to send test data to server');
+      console.error('Detailed error information:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+      setSubmitStatus({ loading: false, error: error.message });
+      alert('Failed to save proposal. Please try again.');
     }
+  };
+
+  // Add a separate submit handler for debugging
+  const formSubmitHandler = (data) => {
+    console.log('📝 Form submitted with data:', {
+      userAddress: data.userAddress,
+      proposalId: data.proposalId,
+      proposalTitle: data.proposalTitle,
+      description: data.description,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      proposalSettings: data.proposalSettings
+    });
+    console.log('Form validation state:', { isValid, errors });
+    return onSubmitSuccess(data);
   };
 
   if (!globalVariablesReady) {
@@ -199,7 +265,10 @@ const NewProposal = () => {
         <h1 className="text-2xl font-semibold text-yellow-500 mb-6">
           New Proposal
         </h1>
-        <form onSubmit={handleSubmit(onSubmitSuccess)} className="space-y-6">
+        <form 
+          onSubmit={handleSubmit(formSubmitHandler)} 
+          className="space-y-6"
+        >
           {/* User Address Field */}
           <div>
             <label htmlFor="userAddress" className="block text-gray-700 font-medium mb-2">
@@ -207,9 +276,10 @@ const NewProposal = () => {
             </label>
             <div className="space-y-2">
               <input
+                {...register("userAddress")}
                 id="userAddress"
                 type="text"
-                value={globalWalletAddress || 'No wallet connected'}
+                defaultValue={truncateAddress(globalWalletAddress)}
                 disabled={true}
                 className="bg-gray-100 w-full p-3 border border-gray-300 rounded-lg focus:outline-none text-gray-600"
               />
@@ -227,20 +297,16 @@ const NewProposal = () => {
               Proposal ID
             </label>
             <input
+              {...register("proposalId")}
               id="proposalId"
               type="text"
-              {...register("proposalId")}
               disabled={true}
               className={`bg-gray-100 w-full p-3 border ${
-                errors.proposalId
-                  ? "border-red-500 focus:ring-red-200"
-                  : "border-gray-300 focus:ring-yellow-200"
+                errors.proposalId ? "border-red-500" : "border-gray-300"
               } rounded-lg focus:outline-none`}
             />
             {errors.proposalId && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.proposalId.message}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{errors.proposalId.message}</p>
             )}
           </div>
 
@@ -251,60 +317,108 @@ const NewProposal = () => {
             </label>
             <div className="relative">
               <input
+                {...register("proposalTitle")}
                 id="proposalTitle"
                 type="text"
                 placeholder="Write something"
-                {...register("proposalTitle")}
                 className={`bg-white w-full p-3 pr-10 border ${
-                  errors.proposalTitle
-                    ? "border-red-500 focus:ring-red-200"
-                    : "border-gray-300 focus:ring-yellow-200"
+                  errors.proposalTitle ? "border-red-500" : "border-gray-300"
                 } rounded-lg focus:outline-none`}
               />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-yellow-500"
-                onClick={() => console.log('AI Magic for title')}
-              >
-                <FaMagic className="w-4 h-4" />
-              </button>
             </div>
             {errors.proposalTitle && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.proposalTitle.message}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{errors.proposalTitle.message}</p>
             )}
           </div>
 
           {/* Description Field */}
           <div>
-            <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
-              Description
-            </label>
-            <div className="relative">
-              <textarea
-                id="description"
-                placeholder="Write something"
-                rows={4}
-                {...register("description")}
-                className={`bg-white w-full p-3 pr-10 border ${
-                  errors.description
-                    ? "border-red-500 focus:ring-red-200"
-                    : "border-gray-300 focus:ring-yellow-200"
-                } rounded-lg focus:outline-none`}
-              />
+            <div className="flex justify-between items-center mb-2">
+              <label htmlFor="description" className="block text-gray-700 font-medium">
+                Description
+              </label>
               <button
                 type="button"
-                className="absolute right-3 top-3 text-gray-400 hover:text-yellow-500"
-                onClick={() => console.log('AI Magic for description')}
+                onClick={generateProposalStructure}
+                disabled={isGenerating}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
               >
-                <FaMagic className="w-4 h-4" />
+                {isGenerating ? (
+                  <>
+                    <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Generate with AI
+                  </>
+                )}
               </button>
             </div>
+
+            <div className="relative">
+              <textarea
+                {...register("description")}
+                id="description"
+                placeholder="Write your proposal description or click 'Generate with AI' to get suggestions"
+                rows={4}
+                className={`bg-white w-full p-3 pr-10 border ${
+                  errors.description ? "border-red-500" : "border-gray-300"
+                } rounded-lg focus:outline-none`}
+              />
+            </div>
             {errors.description && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.description.message}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+            )}
+
+            {aiSuggestion && (
+              <div className="mt-4 bg-yellow-50 border border-yellow-100 rounded-lg p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                    <h4 className="text-sm font-medium text-yellow-800">AI Suggestion</h4>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setValue('proposalTitle', aiSuggestion.title);
+                        setValue('description', aiSuggestion.description);
+                        setAiSuggestion(null);
+                      }}
+                      className="inline-flex items-center px-3 py-1 text-sm font-medium text-yellow-700 bg-yellow-100 rounded-md hover:bg-yellow-200"
+                    >
+                      Use Suggestion
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAiSuggestion(null)}
+                      className="text-yellow-600 hover:text-yellow-700"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div className="prose prose-sm max-w-none text-gray-600">
+                  <div className="mb-3">
+                    <h5 className="font-medium text-yellow-800">Suggested Title:</h5>
+                    <p>{aiSuggestion.title}</p>
+                  </div>
+                  <div>
+                    <h5 className="font-medium text-yellow-800">Suggested Description:</h5>
+                    <ReactMarkdown>{aiSuggestion.description}</ReactMarkdown>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 
@@ -315,19 +429,15 @@ const NewProposal = () => {
                 Start Date
               </label>
               <input
+                {...register("startDate")}
                 id="startDate"
                 type="date"
-                {...register("startDate")}
                 className={`bg-white w-full p-3 border ${
-                  errors.startDate
-                    ? "border-red-500 focus:ring-red-200"
-                    : "border-gray-300 focus:ring-yellow-200"
+                  errors.startDate ? "border-red-500" : "border-gray-300"
                 } rounded-lg focus:outline-none`}
               />
               {errors.startDate && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.startDate.message}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{errors.startDate.message}</p>
               )}
             </div>
 
@@ -336,22 +446,21 @@ const NewProposal = () => {
                 End Date
               </label>
               <input
+                {...register("endDate")}
                 id="endDate"
                 type="date"
-                {...register("endDate")}
                 className={`bg-white w-full p-3 border ${
-                  errors.endDate
-                    ? "border-red-500 focus:ring-red-200"
-                    : "border-gray-300 focus:ring-yellow-200"
+                  errors.endDate ? "border-red-500" : "border-gray-300"
                 } rounded-lg focus:outline-none`}
               />
               {errors.endDate && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.endDate.message}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{errors.endDate.message}</p>
               )}
             </div>
           </div>
+
+          {/* Hidden Settings Field */}
+          <input type="hidden" {...register("proposalSettings")} value="default" />
 
           <div className="text-center space-y-4">
             {submitStatus.error && (
@@ -359,14 +468,6 @@ const NewProposal = () => {
                 Error: {submitStatus.error}
               </p>
             )}
-            
-            <button
-              type="button"
-              onClick={testFormValues}
-              className="w-full py-2 px-4 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition-colors duration-200"
-            >
-              Test Form Values
-            </button>
 
             <button
               type="submit"
@@ -376,6 +477,10 @@ const NewProposal = () => {
                   ? 'bg-gray-300 cursor-not-allowed' 
                   : 'bg-[#FFE8AE] hover:bg-yellow-500 hover:text-white'
               } text-gray-800 font-medium rounded-lg transition-colors duration-200`}
+              onClick={() => {
+                console.log('🔘 Submit button clicked');
+                console.log('Current form values:', getValues());
+              }}
             >
               {submitStatus.loading ? 'Submitting...' : !globalWalletAddress ? 'Connect Wallet to Submit' : 'Submit Proposal'}
             </button>

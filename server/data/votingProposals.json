@@ -22,5 +22,67 @@
       "abstain": 0
     },
     "totalScore": 2
+  },
+  {
+    "proposalId": "prop_EAc4_m4zt1f0i_5vw",
+    "votes": {
+      "yes": 1,
+      "no": 0,
+      "abstain": 0
+    },
+    "voters": {
+      "0x964DEAc44d657f3e88087FC952e1558359f04286": {
+        "vote": "yes",
+        "timestamp": "2024-12-22T16:13:05.933Z"
+      }
+    },
+    "scores": {
+      "yes": 1,
+      "no": 0,
+      "abstain": 0
+    },
+    "totalScore": 1
+  },
+  {
+    "proposalId": "prop_5c62_m55ofg6h_8mr",
+    "votes": {
+      "yes": 2,
+      "no": 0,
+      "abstain": 0
+    },
+    "voters": {
+      "0xEAE65c628996F47914f37937d7bDDbCCB53f8FC2": {
+        "vote": "yes",
+        "timestamp": "2024-12-26T21:08:54.551Z"
+      },
+      "user_EAE65c62": {
+        "vote": "yes",
+        "timestamp": "2024-12-26T21:33:28.463Z"
+      }
+    },
+    "scores": {
+      "yes": 1,
+      "no": 0,
+      "abstain": 0
+    },
+    "totalScore": 1
+  },
+  {
+    "proposalId": "prop_5c62_m55uv2w5_3jt",
+    "votes": {
+      "yes": 1,
+      "no": 0
+    },
+    "voters": {
+      "user_EAE65c62": {
+        "vote": "yes",
+        "timestamp": "2024-12-26T21:50:06.251Z"
+      }
+    },
+    "scores": {
+      "yes": 0,
+      "no": 0
+    },
+    "totalScore": 0
   }
 ]
