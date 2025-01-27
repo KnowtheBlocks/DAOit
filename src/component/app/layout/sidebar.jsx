@@ -1,44 +1,41 @@
-import React, { useEffect } from "react";
+import  { useEffect, useState } from "react";
 import {
   PiBookOpenUserThin,
   PiNotePencil,
   PiUserListThin,
 } from "react-icons/pi";
 import { RiSettingsLine } from "react-icons/ri";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ReactSVG } from "react-svg";
 import logo from "../../../assets/logo.svg";
 
-function Sidebar() {
+const Sidebar = () => {
   const location = useLocation();
-  const [activeLink, setActiveLink] = React.useState("");
-  const navigate = useNavigate();
+  const [activeLink, setActiveLink] = useState("");
 
   const menuItems = [
     { name: "Proposals", icon: <PiNotePencil />, link: "proposal" },
-    { name: "Learning", icon: <PiBookOpenUserThin />, link: "set" },
-    { name: "Settings", icon: <RiSettingsLine />, link: "learn" },
+    { name: "Learning", icon: <PiBookOpenUserThin />, link: "learn" },
+    { name: "Settings", icon: <RiSettingsLine />, link: "set" },
     { name: "Profile", icon: <PiUserListThin />, link: "profile" },
   ];
 
   useEffect(() => {
-    const pathAfterApp =
-      location.pathname.split("/app")[1]?.split("/")[1] || "";
+    const pathAfterApp = location.pathname.split("/app/")[1] || "";
 
-    const matchedItem = menuItems.find((item) =>
-      location.pathname.endsWith(item.link)
-    );
+    // Find the matched menu item based on the current path
+    const matchedItem = menuItems.find((item) => pathAfterApp.startsWith(item.link));
 
     if (matchedItem) {
       setActiveLink(matchedItem.name);
     } else {
       setActiveLink("Proposals");
     }
-  }, [location.pathname, menuItems]);
+  }, [location.pathname]);
 
   return (
-    <div className="w-64 bg-white shadow-md flex flex-col h-screen">
-      <div className="pl-10 flex-grow">
+    <div className="flex flex-col w-64 h-screen bg-white shadow-md">
+      <div className="flex-grow pl-10">
         <div className="py-20 text-xl font-bold">
           <Link to="/app">
             <ReactSVG src={logo} width={100} height={100} />
@@ -69,6 +66,6 @@ function Sidebar() {
       </div>
     </div>
   );
-}
+};
 
 export default Sidebar;

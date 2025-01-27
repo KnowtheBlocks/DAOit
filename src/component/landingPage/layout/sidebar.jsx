@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const AccordionIcon = ({ isOpen }) => (
   <svg
@@ -34,11 +34,11 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 border-r border-gray-200 p-4 overflow-y-auto">
+    <div className="w-64 p-4 overflow-y-auto border-r border-gray-200">
       <ul className="space-y-4">
         <li>
           <div
-            className="flex justify-between items-center cursor-pointer"
+            className="flex items-center justify-between cursor-pointer"
             onClick={() => toggleSection("introduction")}
           >
             <h3 className="text-lg font-semibold text-gray-700">
@@ -61,7 +61,7 @@ const Sidebar = () => {
 
         <li>
           <div
-            className="flex justify-between items-center cursor-pointer"
+            className="flex items-center justify-between cursor-pointer"
             onClick={() => toggleSection("smartContracts")}
           >
             <h3 className="text-lg font-semibold text-gray-700">
@@ -96,7 +96,7 @@ const Sidebar = () => {
 
         <li>
           <div
-            className="flex justify-between items-center cursor-pointer"
+            className="flex items-center justify-between cursor-pointer"
             onClick={() => toggleSection("resources")}
           >
             <h3 className="text-lg font-semibold text-gray-700">Resources</h3>

@@ -1,7 +1,16 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import profile from "../../../assets/profile.png";
+import { useGlobalStore } from "../../../main";
+import { IoMdNotifications } from "react-icons/io";
+import { Link } from "react-router-dom";
+import { ReactSVG } from "react-svg";
+import Modal from "../../utilies/modal";
+import logo from "../../../assets/logo-white.svg";
+import coin from "../../../assets/coinbase.svg";
+import meta from "../../../assets/metamask.svg";
+import Phantom from "../../../assets/phantom.svg";
 
-function Header({ user, profile }) {
+function Header() {
   const [username, setUsername] = useState("Loading...");
   const { walletAddress } = useGlobalStore();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -28,20 +37,20 @@ function Header({ user, profile }) {
 
   return (
     <div className="mx-20 mt-10 p-5 gap-10 rounded-lg  mb-8 bg-[#373434]">
-      {user && profile ? (
-        <div className="flex items-center  justify-between">
+      {username && profile ? (
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={profile} alt="User" className="w-10 h-10 rounded-full" />
             <div>
-              <h2 className="text-white text-lg font-semibold">
+              <h2 className="text-lg font-semibold text-white">
                 {isLoaded ? username : (
-                  <div className="animate-pulse bg-gray-600 h-6 w-32 rounded">{user}</div>
+                  <div className="w-32 h-6 bg-gray-600 rounded animate-pulse">{username}</div>
                 )}
               </h2>
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <button className="relative bg-black w-10 h-10 rounded-full">
+            <button className="relative w-10 h-10 bg-black rounded-full">
               <span className="absolute w-2.5 h-2.5 bg-red-500 rounded-full right-0 top-0"></span>
               <IoMdNotifications color="white" size={25} className="pl-3" />
             </button>
@@ -56,16 +65,16 @@ function Header({ user, profile }) {
           </div>
           <button
             onClick={() => setActiveModal("wallet")}
-            className="px-4 py-2 bg-black text-white rounded-md "
+            className="px-4 py-2 text-white bg-black rounded-md "
           >
             Connect Wallet
           </button>
           {activeModal === "wallet" && (
             <Modal isOpen={true} onClose={closeModal} title="Choose a wallet">
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col items-center justify-center">
                 <Link to="/app">
                   <button className="flex items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
-                    <span className="flex gap-2 items-center">
+                    <span className="flex items-center gap-2">
                       <ReactSVG src={coin} />
                       Coinbase
                     </span>
@@ -73,14 +82,14 @@ function Header({ user, profile }) {
                 </Link>
                 <Link to="/app">
                   <button className="flex items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
-                    <span className="flex gap-2 items-center">
+                    <span className="flex items-center gap-2">
                       <ReactSVG src={meta} /> Metamask
                     </span>
                   </button>
                 </Link>
                 <Link to="/app">
                   <button className="flex items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
-                    <span className="flex gap-2 items-center">
+                    <span className="flex items-center gap-2">
                       <ReactSVG src={Phantom} /> Phantom
                     </span>
                   </button>

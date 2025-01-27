@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect, useRef } from "react";
 import ProposalCard from "../../utilies/proposalCard";
 import { LuSettings2 } from "react-icons/lu";
 import { PiNotePencilFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import proposalsData from "../../../../server/data/proposals.json";
-
 const DashboardPage = () => {
   const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
+  // const [isVisible, setIsVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [proposals, setProposals] = useState([]);
   const [votingData, setVotingData] = useState({});
-
+  const filterModalRef = useRef(null);
+  
   useEffect(() => {
     // Fetch voting data
     const fetchVotingData = async () => {
@@ -33,7 +33,23 @@ const DashboardPage = () => {
 
     fetchVotingData();
   }, []);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterModalRef.current && !filterModalRef.current.contains(event.target)) {
+        setIsFilterModalOpen(false);
+      }
+    };
 
+    if (isFilterModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFilterModalOpen]);
   useEffect(() => {
     // Transform proposals with voting data
     const transformedProposals = proposalsData
@@ -96,7 +112,7 @@ const DashboardPage = () => {
 
   return (
     
-    <div className="space-y-6 p-6 flex gap-20">
+    <div className="flex gap-20 p-6 space-y-6">
       <div className="pt-14">
         <button
           
@@ -107,27 +123,27 @@ const DashboardPage = () => {
         </button>
         <div
           onClick={() => navigate("/app/new-proposal")}
-          className="mt-10 p-2 border border-gray-300 rounded-full hover:bg-gray-200"
+          className="p-2 mt-10 border border-gray-300 rounded-full hover:bg-gray-200"
         >
           <PiNotePencilFill size={35} />
         </div>
       </div>
 
       <div className="w-full">
-        <div className="flex items-center gap-4 justify-end">
+        <div className="flex items-center justify-end gap-4">
           <input
             type="text"
             placeholder="Search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-64 p-2 border border-gray-300 rounded-md focus:outline-none bg-white"
+            className="w-64 p-2 bg-white border border-gray-300 rounded-md focus:outline-none"
           />
           <button className="bg-[#D9D9D9] text-black px-4 py-2 rounded-md">
             500 credits
           </button>
         </div>
         {isFilterModalOpen && (
-          <div className="absolute mt-2 left-80 w-48 p-4 bg-black text-white">
+          <div   ref={filterModalRef}  className="absolute w-48 p-4 mt-2 text-white bg-black left-80">
             <div className="flex flex-col gap-2">
               <button
                 onClick={() => {
@@ -171,7 +187,7 @@ const DashboardPage = () => {
             </div>
           </div>
         )}
-        <div className="space-y-4 mt-4">
+        <div className="mt-4 space-y-4">
           {filteredProposals.length > 0 ? (
             filteredProposals.map((proposal) => (
               <div 

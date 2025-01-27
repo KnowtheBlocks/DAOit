@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import Header from "../layout/header";
 import HomeCard from "../../utilies/homeCard";
 import Modal from "../../utilies/modal";
