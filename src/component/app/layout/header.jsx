@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import profile from "../../../assets/profile.png";
-import { useGlobalStore } from "../../../main";
 
-function Header() {
+function Header({ user, profile }) {
   const [username, setUsername] = useState("Loading...");
   const { walletAddress } = useGlobalStore();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -23,6 +22,10 @@ function Header() {
     return () => clearInterval(pollInterval);
   }, [walletAddress]);
 
+  const [activeModal, setActiveModal] = useState(null);
+
+  const closeModal = () => setActiveModal(null);
+
   return (
     <div className="mx-20 mt-10 p-5 gap-10 rounded-lg  mb-8 bg-[#373434]">
       {user && profile ? (
@@ -30,11 +33,11 @@ function Header() {
           <div className="flex items-center gap-2">
             <img src={profile} alt="User" className="w-10 h-10 rounded-full" />
             <div>
-            <h2 className="text-white text-lg font-semibold">
-              {isLoaded ? username : (
-                <div className="animate-pulse bg-gray-600 h-6 w-32 rounded"></div>
-              )}
-          </h2>
+              <h2 className="text-white text-lg font-semibold">
+                {isLoaded ? username : (
+                  <div className="animate-pulse bg-gray-600 h-6 w-32 rounded">{user}</div>
+                )}
+              </h2>
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -87,6 +90,7 @@ function Header() {
           )}
         </div>
       )}
+
     </div>
   );
 }

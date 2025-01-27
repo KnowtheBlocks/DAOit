@@ -10,7 +10,8 @@ import { ReactSVG } from "react-svg";
 import logo from "../../../assets/logo.svg";
 
 function Sidebar() {
-  const [activeLink, setActiveLink] = useState("Proposals");
+  const location = useLocation();
+  const [activeLink, setActiveLink] = React.useState("");
   const navigate = useNavigate();
 
   const menuItems = [
@@ -48,14 +49,14 @@ function Sidebar() {
           {menuItems.map((item) => (
             <Link
               key={item.name}
-              to={item.link}
-              onClick={() => setActiveLink(item.name)}
-              className={`flex items-center space-x-3 cursor-pointer`}
+              to={`/app/${item.link}`}
+              className={`flex items-center space-x-3 cursor-pointer text-lg  
+              ${activeLink === item.name ? "font-bold" : "text-black"} `}
             >
               <span
                 className={`${
                   activeLink === item.name
-                    ? "text-yellow-500 font-medium pl-5"
+                    ? "text-yellow-500 font-bold pl-5"
                     : "text-black"
                 }`}
               >

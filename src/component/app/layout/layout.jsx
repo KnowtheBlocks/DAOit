@@ -1,10 +1,14 @@
 import React from "react";
 import Sidebar from "./sidebar";
 import Header from "./header";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useGlobalStore } from "../../../main";
+import profile from "../../../assets/profile.png";
 
 function Layout() {
+  const location = useLocation();
+
+  const shouldShowHeader = location.pathname !== "/app/profile";
   const { walletAddress } = useGlobalStore();
 
   // If no wallet is connected, show a message instead of the layout
