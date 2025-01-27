@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { ReactSVG } from "react-svg";
 import logo from "../../../assets/logo.svg";
@@ -41,13 +40,13 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-100 p-8">
-      <div className=" mx-auto flex flex-col md:flex-row gap-8 px-4 lg:px-10">
+    <footer className="p-8 bg-gray-100">
+      <div className="flex flex-col gap-8 px-4 mx-auto  md:flex-row lg:px-10">
         <div className="md:w-1/3">
           <Link to="/">
             <ReactSVG src={logo} className="w-20 h-20" />
           </Link>
-          <p className="text-sm  max-w-md mb-4">
+          <p className="max-w-md mb-4 text-sm">
             DAOit is a decentralized governance platform designed for
             educational institutions, leveraging blockchain technology to
             facilitate democratic decision-making, financial inclusion, and
@@ -61,7 +60,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="hover:text-black text-xl"
+                className="text-xl hover:text-black"
               >
                 <Icon />
               </a>
@@ -69,16 +68,16 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-8 md:gap-20 md:w-2/3">
+        <div className="flex flex-col gap-8 md:flex-row md:gap-20 md:w-2/3">
           {sections.map((section) => (
             <div key={section.title} className="flex-1">
-              <h3 className="font-bold text-gray-800 mb-4">{section.title}</h3>
+              <h3 className="mb-4 font-bold text-gray-800">{section.title}</h3>
               <ul className="space-y-2">
                 {section.links.map(({ label, path }) => (
                   <li key={label}>
                     <Link
                       to={path}
-                      className="text-gray-700 hover:text-black text-sm"
+                      className="text-sm text-gray-700 hover:text-black"
                     >
                       {label}
                     </Link>
@@ -90,7 +89,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="mt-12 px-4 lg:px-10  text-gray-600 text-sm">
+      <div className="px-4 mt-12 text-sm text-gray-600 lg:px-10">
         All rights reserved © DAOit
       </div>
     </footer>

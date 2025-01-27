@@ -1,5 +1,4 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Community from "./component/landingPage/pages/communityPage";
 import Doc from "./component/landingPage/pages/documentationPage";
@@ -43,6 +42,8 @@ const App = () => {
 
       {/* Dashboard App Layout */}
       <Route path="/app" element={<Layout />}>
+      <Route path="proposal" element={<Navigate to="/app" replace />} />
+
             <Route index element={<DashboardPage />} />
             <Route path="proposal/:id" element={<ProposalPage />} />
             <Route path="profile" element={<ProfileCard />} />

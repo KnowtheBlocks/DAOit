@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,7 +6,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../../utilies/modal";
 import { TiTickOutline } from "react-icons/ti";
-import { FaMagic } from "react-icons/fa";
+// import { FaMagic } from "react-icons/fa";
 import { create } from "zustand";
 import { useGlobalStore } from "../../../main";
 import ReactMarkdown from "react-markdown";
@@ -41,7 +41,8 @@ const NewProposal = () => {
   const [globalVariablesReady, setGlobalVariablesReady] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState(null);
-
+  const [activeModal, setActiveModal] = useState(null);
+  const navigate = useNavigate();
   // Generate proposal ID based on user ID and timestamp
   const generateProposalId = (userId) => {
     const timestamp = Date.now().toString(36); // Convert timestamp to base36
@@ -154,9 +155,9 @@ const NewProposal = () => {
   };
 
   // Add or update the helper function to check description length
-  const getDescriptionLength = (description) => {
-    return description?.length || 0;
-  };
+  // const getDescriptionLength = (description) => {
+  //   return description?.length || 0;
+  // };
 
   const onSubmitSuccess = async (data) => {
     console.log('🚀 onSubmitSuccess triggered');
@@ -253,25 +254,34 @@ const NewProposal = () => {
   if (!globalVariablesReady) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div>
+        <div className="w-8 h-8 border-b-2 border-yellow-600 rounded-full animate-spin"></div>
       </div>
     );
   }
+ 
 
   const closeModal = () => setActiveModal(null);
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
+    <div className="flex flex-col gap-8 lg:flex-row">
       <div className="flex-1">
-        <h1 className="text-2xl font-semibold text-yellow-500 mb-6">
-          New Proposal
-        </h1>
+      <div className="flex items-center gap-2 mb-6">
+          <div
+            className="p-2 border border-gray-300 rounded-full shadow-md h-fit hover:bg-gray-200"
+            onClick={() => navigate(-1)}
+          >
+            <IoIosArrowRoundBack size={25} />
+          </div>
+          <h1 className="text-2xl font-semibold text-yellow-500 ">
+            New Proposal
+          </h1>
+        </div>
         <form 
           onSubmit={handleSubmit(formSubmitHandler)} 
           className="space-y-6"
         >
           {/* User Address Field */}
           <div>
-            <label htmlFor="userAddress" className="block text-gray-700 font-medium mb-2">
+            <label htmlFor="userAddress" className="block mb-2 font-medium text-gray-700">
               Connected Wallet Address
             </label>
             <div className="space-y-2">
@@ -281,7 +291,7 @@ const NewProposal = () => {
                 type="text"
                 defaultValue={truncateAddress(globalWalletAddress)}
                 disabled={true}
-                className="bg-gray-100 w-full p-3 border border-gray-300 rounded-lg focus:outline-none text-gray-600"
+                className="w-full p-3 text-gray-600 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none"
               />
               {userId && (
                 <div className="text-sm text-gray-600">
@@ -293,7 +303,7 @@ const NewProposal = () => {
 
           {/* Proposal ID Field */}
           <div>
-            <label htmlFor="proposalId" className="block text-gray-700 font-medium mb-2">
+            <label htmlFor="proposalId" className="block mb-2 font-medium text-gray-700">
               Proposal ID
             </label>
             <input
@@ -306,13 +316,13 @@ const NewProposal = () => {
               } rounded-lg focus:outline-none`}
             />
             {errors.proposalId && (
-              <p className="text-red-500 text-sm mt-1">{errors.proposalId.message}</p>
+              <p className="mt-1 text-sm text-red-500">{errors.proposalId.message}</p>
             )}
           </div>
 
           {/* Proposal Title Field */}
           <div>
-            <label htmlFor="proposalTitle" className="block text-gray-700 font-medium mb-2">
+            <label htmlFor="proposalTitle" className="block mb-2 font-medium text-gray-700">
               Proposal Title
             </label>
             <div className="relative">
@@ -327,25 +337,25 @@ const NewProposal = () => {
               />
             </div>
             {errors.proposalTitle && (
-              <p className="text-red-500 text-sm mt-1">{errors.proposalTitle.message}</p>
+              <p className="mt-1 text-sm text-red-500">{errors.proposalTitle.message}</p>
             )}
           </div>
 
           {/* Description Field */}
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <label htmlFor="description" className="block text-gray-700 font-medium">
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="description" className="block font-medium text-gray-700">
                 Description
               </label>
               <button
                 type="button"
                 onClick={generateProposalStructure}
                 disabled={isGenerating}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-yellow-600 border border-transparent rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
               >
                 {isGenerating ? (
                   <>
-                    <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                    <div className="w-4 h-4 mr-2 border-2 border-white rounded-full animate-spin border-t-transparent"></div>
                     Generating...
                   </>
                 ) : (
@@ -372,12 +382,12 @@ const NewProposal = () => {
               />
             </div>
             {errors.description && (
-              <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+              <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>
             )}
 
             {aiSuggestion && (
-              <div className="mt-4 bg-yellow-50 border border-yellow-100 rounded-lg p-4">
-                <div className="flex justify-between items-start mb-3">
+              <div className="p-4 mt-4 border border-yellow-100 rounded-lg bg-yellow-50">
+                <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
@@ -408,7 +418,7 @@ const NewProposal = () => {
                     </button>
                   </div>
                 </div>
-                <div className="prose prose-sm max-w-none text-gray-600">
+                <div className="prose-sm prose text-gray-600 max-w-none">
                   <div className="mb-3">
                     <h5 className="font-medium text-yellow-800">Suggested Title:</h5>
                     <p>{aiSuggestion.title}</p>
@@ -423,9 +433,9 @@ const NewProposal = () => {
           </div>
 
           {/* Date Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label htmlFor="startDate" className="block text-gray-700 font-medium mb-2">
+              <label htmlFor="startDate" className="block mb-2 font-medium text-gray-700">
                 Start Date
               </label>
               <input
@@ -437,12 +447,12 @@ const NewProposal = () => {
                 } rounded-lg focus:outline-none`}
               />
               {errors.startDate && (
-                <p className="text-red-500 text-sm mt-1">{errors.startDate.message}</p>
+                <p className="mt-1 text-sm text-red-500">{errors.startDate.message}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="endDate" className="block text-gray-700 font-medium mb-2">
+              <label htmlFor="endDate" className="block mb-2 font-medium text-gray-700">
                 End Date
               </label>
               <input
@@ -454,7 +464,7 @@ const NewProposal = () => {
                 } rounded-lg focus:outline-none`}
               />
               {errors.endDate && (
-                <p className="text-red-500 text-sm mt-1">{errors.endDate.message}</p>
+                <p className="mt-1 text-sm text-red-500">{errors.endDate.message}</p>
               )}
             </div>
           </div>
@@ -462,9 +472,9 @@ const NewProposal = () => {
           {/* Hidden Settings Field */}
           <input type="hidden" {...register("proposalSettings")} value="default" />
 
-          <div className="text-center space-y-4">
+          <div className="space-y-4 text-center">
             {submitStatus.error && (
-              <p className="text-red-500 text-sm">
+              <p className="text-sm text-red-500">
                 Error: {submitStatus.error}
               </p>
             )}
@@ -490,14 +500,14 @@ const NewProposal = () => {
               title="Proposal posted successfully "
               color="bg-black"
             >
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col items-center justify-center">
                 <div className="p-2 h-fit border rounded-full shadow-md bg-[#60CF0B]">
                   <TiTickOutline />
                 </div>
 
                 <Link to="/app">
                   <button className="flex bg-gradient-to-r from-[#F8B51C] to-[#FEE539] text-white  items-center justify-center w-[350px] px-4 py-2 bg-[#494445] my-1 rounded-lg">
-                    <span className="flex gap-2 items-center">View</span>
+                    <span className="flex items-center gap-2">View</span>
                   </button>
                 </Link>
               </div>
