@@ -61,7 +61,7 @@ const HowItWorks = () => {
               </div>
             ))}
 
-            <span className="h-[500px] w-[500px] rounded-full bg-[#ffb60a7e] absolute blur-[150px] right-[30%] top-[25%]"></span>
+            <span className="h-[500px] w-[500px] rounded-full bg-[#fff8c6] absolute blur-[50px] right-[30%] top-[25%]"></span>
           </div>
 
           <button className="flex rounded-[8px] justify-center items-center bg-gradient-to-br from-[#3E4141] to-[#F8B91E] p-[1px] mt-8">
