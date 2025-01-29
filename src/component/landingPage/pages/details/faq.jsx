@@ -31,7 +31,7 @@ const FAQs = () => {
   };
 
   return (
-    <section className="w-full flex justify-center bg-[url('/LandingPage/FaqBg.svg')] bg-fixed bg-cover bg-center py-24">
+    <section className="w-full flex justify-center bg-[url('/LandingPage/FaqBg.svg')] bg-fixed bg-cover bg-top py-24">
       <div className="px-10 max-w-screen-2xl w-full flex flex-col items-center bg-transparent">
         <h2 className="text-[40px] font-bold mb-6">Frequently Asked Question</h2>
         <div className="space-y-4 w-full">

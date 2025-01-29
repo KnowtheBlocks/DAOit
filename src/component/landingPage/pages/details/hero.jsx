@@ -47,7 +47,7 @@ const HeroSection = () => {
 
         <img src="/LandingPage/heroImage.png" alt="Hero Image" className="w-[40%]" />
       </main>
-      <Modal
+      {/* <Modal
         isOpen={activeModal === "wallet"}
         onClose={closeModal}
         title="Choose a wallet"
@@ -76,7 +76,7 @@ const HeroSection = () => {
             </button>
           </Link>
         </div>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

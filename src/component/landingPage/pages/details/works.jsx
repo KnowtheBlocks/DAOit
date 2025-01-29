@@ -2,9 +2,11 @@ import React from "react";
 import Card from "../../../utilies/card";
 import vote from "../../../../assets/vote.svg";
 import collaborate from "../../../../assets/colab.svg";
+import proposal from "../../../../../public/LandingPage/proposal.png"
 import wallet from "../../../../assets/Group 17.svg";
 import arrow from "../../../../assets/sideArrow.svg";
 import { ReactSVG } from "react-svg";
+import { Link } from "react-router-dom";
 
 const HowItWorks = () => {
   const cards = [
@@ -12,7 +14,7 @@ const HowItWorks = () => {
       title: "Connect Wallet",
       description:
         "To join the DAOIt you have to connect your wallet either Metamask, wallet connect and form of decentralized wallet which you have.",
-      Icon: wallet,
+      Icon: '/LandingPage/wallet.svg',
     },
 
     {
@@ -33,7 +35,7 @@ const HowItWorks = () => {
       title: "Proposal Execution ",
       description:
         "Upon the conclusion of a vote, the smart contract automatically triggers the proposed action which ensures auditability and effectives of proposals.",
-      Icon: collaborate,
+      Icon: '/LandingPage/proposal.png',
     }
   ];
 
@@ -61,15 +63,17 @@ const HowItWorks = () => {
               </div>
             ))}
 
-            <span className="h-[500px] w-[500px] rounded-full bg-[#fff8c6] absolute blur-[50px] right-[30%] top-[25%]"></span>
+            <span className="h-[500px] w-[500phow-it-worksx] rounded-full bg-[#fff8c6] absolute blur-[50px] right-[30%] top-[25%]"></span>
           </div>
 
-          <button className="flex rounded-[8px] justify-center items-center bg-gradient-to-br from-[#3E4141] to-[#F8B91E] p-[1px] mt-8">
-            <div className="flex items-center gap-4 justify-center bg-white px-5 py-3 h-full w-full rounded-[5px]">
-              <p className="text-black">Show more</p>
-              <ReactSVG src={arrow} />
-            </div>
-          </button>
+          <Link to="/how-it-works">
+            <button className="flex rounded-[8px] justify-center items-center bg-gradient-to-br from-[#3E4141] to-[#F8B91E] p-[1px] mt-8">
+              <div className="flex items-center gap-4 justify-center bg-white px-5 py-3 h-full w-full rounded-[5px]">
+                <p className="text-black">Show more</p>
+                <ReactSVG src={arrow} />
+              </div>
+            </button>
+          </Link>
 
         </div>
         {/* <div className="py-16 px-8">

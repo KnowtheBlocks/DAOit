@@ -1,9 +1,5 @@
 import React from "react";
-import HeroSection from "./details/hero";
-import HowItWorks from "./details/works";
-import FAQs from "./details/faq";
-import FeatureSection from "./details/features";
-import JoinCommunity from "./details/community";
+import { HeroSection, HowItWorks, FAQs, FeatureSection, JoinCommunity } from "./details";
 function Home() {
   return (
     <div className="flex flex-col items-center">
