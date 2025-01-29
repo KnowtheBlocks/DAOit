@@ -1,0 +1,2 @@
+export const DAOIT = "0xE3d094a057CcEF06066ded13F72a88f0238c136e";
+export const TOKENADDRESS = "0x4ad8f1f26e789c1a248461c8e9e8a54c9c59a28a";
