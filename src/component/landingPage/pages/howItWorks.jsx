@@ -1,4 +1,6 @@
 import React from "react";
+import { ReactSVG } from "react-svg";
+import arrow from "../../../assets/sideArrow.svg";
 import vote from "../../../assets/vote.svg";
 import collaborate from "../../../assets/colab.svg";
 import create from "../../../assets/idea.svg";
@@ -6,6 +8,7 @@ import execute from "../../../assets/join.svg";
 import wallet from "../../../assets/wallet.svg";
 import transparency from "../../../assets/transparency.svg";
 import Card from "../../utilies/card";
+import { Link } from "react-router-dom";
 
 const cards = [
   {
@@ -47,29 +50,71 @@ const cards = [
 ];
 
 const Works = () => (
-  <div className="flex flex-col item-center pt-8 px-14    ">
-    <div className=" mb-8">
-      <h1 className="text-3xl font-bold text-gray-800">
-        Learn more on how DAOit works Today!
-      </h1>
-      <p className="mt-4 text-gray-600 max-w-lg pb-10">
-        In a few detailed steps, learn more about how DAOit works, the values,
-        and features it offers, and how to use it.
-      </p>
-    </div>
-    <div className="pt-10 pb-20">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 xl:gap-36 justify-center items-center">
-        {cards.map((card, index) => (
-          <Card
-            key={index}
-            title={card.title}
-            description={card.description}
-            svgSrc={card.Icon}
-          />
-        ))}
-      </div>
-    </div>
-  </div>
+  <section className="flex justify-center items-center w-full">
+    <main className="flex flex-col items-center px-10 max-w-screen-2xl w-full">
+      <section className="flex justify-center py-10 items-center text-center flex-col w-[1180px]">
+        <h1 className="text-2xl md:text-5xl font-bold text-[#102325]">
+          Your Guide to Decentralization
+        </h1>
+        <p className="mt-4 text-lg">
+          Understand, Participate, and Lead with DAOIT. <br />See how our platform enables a new era of educational governance.
+        </p>
+        <div className="mt-6 flex gap-4">
+          <Link to="/home">
+            <button className="bg-gradient-to-r from-[#F8B51C] to-[#FEE539] hover:bg-yellow-600 text-black text-md py-3 rounded shadow-md shadow-[#F8B51C33] w-[200px] h-[54px]">
+              Launch App
+            </button>
+          </Link>
+
+          <button className="flex rounded-[8px] justify-center items-center w-[200px] h-[54px] bg-gradient-to-br from-[#3E4141] to-[#F8B91E] p-[1px]">
+            <div className="flex items-center gap-4 justify-center bg-white h-full w-full rounded-[5px]">
+              <p className="text-black">Explore Proposal</p>
+              <ReactSVG src={arrow} />
+            </div>
+          </button>
+        </div>
+        <div className="mt-8">
+          {/* <img
+            src="/path/to/blockchain-image.png"
+            alt="Blockchain graphic"
+            className="mx-auto max-w-full"
+          /> */}
+        </div>
+      </section>
+
+      <div className="max-w-screen-2xl w-full px-10 flex flex-col items-center gap-y-5 pb-20">
+          <div className="flex flex-col items-center text-center w-[800px] py-10 gap-y-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+              Take a Step at a Time
+            </h2>
+          </div>
+
+
+          <div className="flex flex-wrap justify-between w-[90%] gap-10 py-5 relative">
+            {cards.map((card, index) => (
+              <div className="w-[45%] h-[440px] z-10">
+                <Card
+                  key={index}
+                  title={card.title}
+                  description={card.description}
+                  svgSrc={card.Icon}
+                />
+              </div>
+            ))}
+
+            <span className="h-[500px] w-[500px] rounded-full bg-[#fff8c6] absolute blur-[50px] right-[30%] top-[25%]"></span>
+          </div>
+
+          <button className="flex rounded-[8px] justify-center items-center bg-gradient-to-br from-[#3E4141] to-[#F8B91E] p-[1px] my-8">
+            <div className="flex items-center gap-4 justify-center bg-white px-5 py-3 h-full w-full rounded-[5px]">
+              <p className="text-black">Show more</p>
+              <ReactSVG src={arrow} />
+            </div>
+          </button>
+
+        </div>
+    </main>
+  </section>
 );
 
 export default Works;

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ReactSVG } from "react-svg";
 import { IoIosArrowDown } from "react-icons/io";
+import { FAQs } from "./details";
 import logo from "../../../assets/daoit.svg";
 import help from "../../../assets/help.svg";
 import more from "../../../assets/more.svg";
@@ -32,8 +33,8 @@ const Community = () => {
     },
   ];
   return (
-    <div className=" flex flex-col items-center text-center pt-8 lg:px-28 px-10">
-      <section className="p-8  ">
+    <div className=" flex flex-col items-center pt-8">
+      <section className="p-8 text-center ">
         <h1 className="text-3xl font-bold text-gray-800">
           Join the Daoit Community
         </h1>
@@ -79,6 +80,8 @@ const Community = () => {
           ))}
         </div>
       </div>
+
+      <FAQs />
     </div>
   );
 };

@@ -40,8 +40,8 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="p-8 bg-gray-100">
-      <div className="flex flex-col gap-8 px-4 mx-auto  md:flex-row lg:px-10">
+    <footer className="py-10 bg-gray-100 ">
+      <div className="flex flex-col max-w-screen-2xl w-full gap-8 px-4 mx-auto  md:flex-row lg:px-10">
         <div className="md:w-1/3">
           <Link to="/">
             <ReactSVG src={logo} className="w-20 h-20" />

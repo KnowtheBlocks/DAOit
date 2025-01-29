@@ -1,24 +1,33 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const JoinCommunity = () => {
   return (
-    <div className="bg-white/50 rounded-lg shadow-lg backdrop-blur-sm border border-white/30 pt-12 pb-40 px-8 text-center max-w-5xl mx-auto my-20">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
-        Join the Community
-      </h2>
-      <p className="text-gray-600 mt-4">
-        Learn more about DAOit, join us on Discord and X app to chat with the
-        team and community.
-      </p>
-      <div className="mt-6 flex justify-center gap-4">
-        <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded">
-          Join us on Discord
-        </button>
-        <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded">
-          Join us on X
-        </button>
-      </div>
-    </div>
+    <section className="w-full flex justify-center items-center bg-[url('/LandingPage/joinCommunityBg.jpg')]">
+      <main className="w-full h-[650px] flex justify-center items-center text-center  text-white bg-[#000000BD]">
+        <div className="w-[845px] flex flex-col gap-y-5">
+          <h2 className="text-2xl md:text-[48px] font-bold">
+            Join the Daoit Communtity
+          </h2>
+          <p className="mt-10 text-[22px]">
+            Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. 
+          </p>
+          <div className="mt-6 flex justify-center gap-x-[32px]">
+            <Link to="#">
+              <button className="bg-gradient-to-r from-[#F8B51C] to-[#FEE539] hover:bg-yellow-600 text-black text-md py-3 rounded-[8px] shadow-md shadow-[#F8B51C33] w-[200px] h-[54px]">
+                Join us on Discord
+              </button>
+            </Link>
+
+            <Link to="#">
+              <button className="bg-gradient-to-r from-[#F8B51C] to-[#FEE539] hover:bg-yellow-600 text-black text-md py-3 rounded-[8px] shadow-md shadow-[#F8B51C33] w-[200px] h-[54px]">
+                Join us on X
+              </button>
+            </Link>
+          </div>
+        </div>
+      </main>
+    </section>
   );
 };
 
