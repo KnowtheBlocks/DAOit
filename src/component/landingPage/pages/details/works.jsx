@@ -3,7 +3,7 @@ import Card from "../../../utilies/card";
 import vote from "../../../../assets/vote.svg";
 import collaborate from "../../../../assets/colab.svg";
 import wallet from "../../../../assets/Group 17.svg";
-import global from "../../../../assets/global.svg";
+import arrow from "../../../../assets/sideArrow.svg";
 import { ReactSVG } from "react-svg";
 
 const HowItWorks = () => {
@@ -16,43 +16,63 @@ const HowItWorks = () => {
     },
 
     {
-      title: "Voting",
+      title: "Proposals and  Voting",
       description:
-        "Enables the integration of blockchain-enabled voting methods such as quadratic voting, which ensures that participants with fewer tokens have a meaningful say in decisions, avoiding dominance by a single group.",
+        "Create proposals, discuss and vote on new learning modules, school policies, learning methods which allows inclusivity of all participants in decision making.",
       Icon: vote,
     },
 
     {
-      title: "Collaboration Medium",
+      title: " Creation Proposal",
       description:
-        "DAOIt introduces an inclusive participatory and a  global learning ecosystem, through decentralized finance (DeFi) tools, allowing participants to learn, contribute and interact with crypto wallets, trading platforms, and staking mechanisms.",
+        "Allow creation of proposal on smart contract based on new learning modules, school policies, learning methods and others. Proposal submissions, recording the proposal details which include it’s description, expiration date.",
       Icon: collaborate,
     },
+
+    {
+      title: "Proposal Execution ",
+      description:
+        "Upon the conclusion of a vote, the smart contract automatically triggers the proposed action which ensures auditability and effectives of proposals.",
+      Icon: collaborate,
+    }
   ];
 
   return (
-    <div className="relative overflow-hidden ">
-      <div className="absolute inset-0 bg-header-pattern bg-no-repeat bg-left-top transform scale-x-[-1] bg-[length:150%]"></div>
+    <section className="flex justify-center">
       <div className="relative z-10 ">
-        {" "}
-        <div className=" py-12 px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
-            How It Works
-          </h2>
-          <div className="pt-10 pb-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 xl:gap-36 justify-center items-center">
-              {cards.map((card, index) => (
+        <div className="max-w-screen-2xl w-full px-10 flex flex-col items-center gap-y-5">
+          <div className="flex flex-col items-center text-center w-[800px] py-10 gap-y-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+              How <span className="text-[#BA8100]">DAOIt</span> Works
+            </h2>
+            <p className="text-[#777777] text-lg">Join our Educational Decentralized Autonomous Organization (DAO)  to Learn, Collaborate, and Grow. We are Focus on  Empowering Students, Educators, and Administrators </p>
+          </div>
+
+
+          <div className="flex flex-wrap justify-between w-[90%] gap-10 py-5 relative">
+            {cards.map((card, index) => (
+              <div className="w-[45%] h-[440px] z-10">
                 <Card
                   key={index}
                   title={card.title}
                   description={card.description}
                   svgSrc={card.Icon}
                 />
-              ))}
-            </div>
+              </div>
+            ))}
+
+            <span className="h-[500px] w-[500px] rounded-full bg-[#ffb60a7e] absolute blur-[150px] right-[30%] top-[25%]"></span>
           </div>
+
+          <button className="flex rounded-[8px] justify-center items-center bg-gradient-to-br from-[#3E4141] to-[#F8B91E] p-[1px] mt-8">
+            <div className="flex items-center gap-4 justify-center bg-white px-5 py-3 h-full w-full rounded-[5px]">
+              <p className="text-black">Show more</p>
+              <ReactSVG src={arrow} />
+            </div>
+          </button>
+
         </div>
-        <div className="py-16 px-8">
+        {/* <div className="py-16 px-8">
           <div className="flex flex-col md:flex-row items-center md:gap-5 md:space-x-8">
             <div className="text-center md:text-left max-w-2xl">
               <h3 className="text-[40px] font-bold mb-4 text-yellow-600">
@@ -70,9 +90,9 @@ const HowItWorks = () => {
             </div>
             <ReactSVG src={global} />
           </div>
-        </div>
+        </div> */}
       </div>
-    </div>
+    </section>
   );
 };
 
