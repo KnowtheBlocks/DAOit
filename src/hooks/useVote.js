@@ -10,20 +10,20 @@ const daoitcontract = getContract({
 });
 
   const {
-    data: proposals,
-    isLoading: proposalLoading,
-    error: proposalError,
+    data: votes,
+    isLoading: voteLoading,
+    error: voteError,
   } = useSendTransaction({
     contract: daoitcontract,
     method:
-      "function createProposal(string memory _description)",
-    params: [description],
+      "function vote(uint _proposalId, uint256 tokens, bool support)",
+    params: [proposalId, tokens, support],
   });
 
   return {
-     proposals,
-     proposalLoading,
-     proposalError,
+      votes,
+      voteLoading,
+      voteError,
 };
 
 
