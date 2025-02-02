@@ -2,7 +2,7 @@ import React, { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ThirdwebProvider, ConnectButton, useActiveAccount, useWalletBalance } from "thirdweb/react";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
-import { Ethereum, Goerli } from "@thirdweb-dev/chains";
+import { Sepolia, Goerli } from "@thirdweb-dev/chains";
 import { FaChevronDown, FaChevronUp, FaCopy } from "react-icons/fa";
 import "./index.css";
 import App from "./App.jsx";
@@ -45,7 +45,7 @@ function WalletButton() {
 
   const { data: balance, isLoading } = useWalletBalance({
     client,
-    chain: Ethereum,
+    chain: Sepolia,
     address: account?.address,
   });
   console.log("💰 Wallet Balance:", isLoading ? "Loading..." : balance?.displayValue);
@@ -116,8 +116,8 @@ root.render(
     <BrowserRouter>
       <ThirdwebProvider 
         clientId={clientId}
-        activeChain={Ethereum}
-        supportedChains={[Ethereum, Goerli]}
+        activeChain={Sepolia}
+        supportedChains={[Sepolia]}
       >
         <App />
         <WalletButton />

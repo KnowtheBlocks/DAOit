@@ -10,6 +10,29 @@ import { TiTickOutline } from "react-icons/ti";
 import { create } from "zustand";
 import { useGlobalStore } from "../../../main";
 import ReactMarkdown from "react-markdown";
+import { getContract, prepareContractCall, createThirdwebClient } from "thirdweb";
+import { useSendTransaction } from "thirdweb/react";
+import { sepolia } from "thirdweb/chains";
+import { DAOIT } from "../../../lib/constants";
+import { toast } from "react-toastify";
+// import { client } from "../../../utils/clients";
+
+
+const client = createThirdwebClient({
+  clientId: "58cdb2d58aaf66e7872b6eb45c258fdd", // Replace with your thirdweb client ID
+});
+
+
+const daoitcontract = getContract({ 
+  address: DAOIT,
+  chain: sepolia,
+  client,
+});
+
+
+console.log("Exports from constants.js:", { client, DAOIT });
+
+
 
 // Updated Zod schema with new fields
 const proposalSchema = z.object({
@@ -27,6 +50,7 @@ const proposalSchema = z.object({
   endDate: z.string().nonempty("End date is required"),
   proposalSettings: z.string().nonempty("Please select a proposal setting"),
 });
+
 
 // Access the global wallet store
 const useWalletStore = create((set) => ({
@@ -49,6 +73,9 @@ const NewProposal = () => {
     const randomStr = Math.random().toString(36).substring(2, 5);
     return `prop_${userId ? userId.slice(-4) : 'anon'}_${timestamp}_${randomStr}`;
   };
+
+  const { mutate: sendTransaction, isLoading: proposalLoading } = useSendTransaction();
+  
 
   // Poll for global variables until they are available
   useEffect(() => {
@@ -87,6 +114,51 @@ const NewProposal = () => {
     },
     mode: 'onChange'
   });
+
+  const createProposalOnChain = async (title, description) => {
+    console.log("Creating proposal on chain with title:", title);
+    try {
+      // Prepare the contract call
+      const proposalTx = await prepareContractCall({
+        contract: daoitcontract,
+        method: "function createProposal(string memory title, string memory _description)",
+        params: [title, description], // Use the passed title and description directly
+      });
+  
+      // Send the transaction
+      const transactionResult = await sendTransaction(proposalTx);
+
+      console.log("Transaction successful with result:", transactionResult);
+      toast.success("Proposal created successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      
+      return true;
+    } catch (error) {
+      console.error("Error creating proposal on chain:", error);
+
+      toast.error("Failed to create proposal. Please try again.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      throw error;
+    }
+  };
+
+
+
+
 
   // Add truncateAddress function near the top of the component
   const truncateAddress = (address) => {
@@ -165,7 +237,21 @@ const NewProposal = () => {
     console.log('Form data received:', data);
     setSubmitStatus({ loading: true, error: null });
     
+
+
     try {
+      // First, submit to smart contract
+      console.log('Submitting to smart contract...');
+      // await proposals();
+      const proposalCreated = await createProposalOnChain(data.proposalTitle, data.description);
+
+      if (!proposalCreated) {
+        throw new Error('Failed to create proposal on chain');
+      }
+  
+
+    
+    
       console.log('Setting up headers...');
       const myHeaders = new Headers();
       myHeaders.append("Authorization", "Token fy0I9k6HrFPbciwBx9spI1JGN2pk0mcU");
@@ -221,9 +307,20 @@ const NewProposal = () => {
       setValue('proposalId', newProposalId);
       setSubmitStatus({ loading: false, error: null });
       
+    // Show success toast for the entire process
+    toast.success("Proposal submitted successfully!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+
+    console.l
       console.log('Redirecting to /app...');
       // Redirect to /app after successful submission
-      window.location.href = '/app';
+      // window.location.href = '/app';
       
     } catch (error) {
       console.error('Detailed error information:', {
@@ -232,8 +329,25 @@ const NewProposal = () => {
         name: error.name
       });
       setSubmitStatus({ loading: false, error: error.message });
-      alert('Failed to save proposal. Please try again.');
+      toast.error("Failed to submit proposal. Please try again.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }finally {
+      // Stop loading only after everything is done
+      setSubmitStatus({ loading: false, error: null });
     }
+  };
+
+  const getSubmitButtonText = () => {
+    if (proposalLoading) return 'Submitting to blockchain...';
+    if (submitStatus.loading) return 'Saving to database...';
+    if (!globalWalletAddress) return 'Connect Wallet to Submit';
+    return 'Submit Proposal';
   };
 
   // Add a separate submit handler for debugging
@@ -250,6 +364,8 @@ const NewProposal = () => {
     console.log('Form validation state:', { isValid, errors });
     return onSubmitSuccess(data);
   };
+
+  
 
   if (!globalVariablesReady) {
     return (
@@ -492,6 +608,7 @@ const NewProposal = () => {
                 console.log('Current form values:', getValues());
               }}
             >
+           
               {submitStatus.loading ? 'Submitting...' : !globalWalletAddress ? 'Connect Wallet to Submit' : 'Submit Proposal'}
             </button>
             <Modal

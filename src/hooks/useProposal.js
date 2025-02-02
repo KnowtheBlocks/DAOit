@@ -1,23 +1,24 @@
 import { getContract, prepareContractCall } from "thirdweb";
 import { useSendTransaction } from "thirdweb/react";
-import { ethereum } from "thirdweb/chains";
-import { client, DAOIT } from "../lib/constants";
+import { sepolia } from "thirdweb/chains";
+import {  DAOIT } from "../lib/constants";
+import {client} from "../utils/clients";
 
 const daoitcontract = getContract({
   address: DAOIT,
-  chain: ethereum,
+  chain: sepolia,
   client,
 });
 
   const {
-    data: proposals,
+    mutateAsync: proposals,
     isLoading: proposalLoading,
     error: proposalError,
   } = useSendTransaction({
     contract: daoitcontract,
     method:
-      "function createProposal(string memory _description)",
-    params: [description],
+      "function createProposal(string memory title, string memory _description)",
+    params: [title, description],
   });
 
   return {
