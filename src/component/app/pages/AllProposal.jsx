@@ -6,92 +6,83 @@ import { useNavigate } from "react-router-dom";
 import FilterModal from "./allProposal/filter";
 import ProposalList from "./allProposal/proposalList";
 import SearchInput from "./allProposal/searchInput";
+import { sepolia } from "thirdweb/chains";
+import { getContract, createThirdwebClient } from "thirdweb";
+import { DAOIT } from "../../../lib/constants";
+import { useReadContract } from "thirdweb/react";
+import ProposalModal from "./ProposalModal";
+import TokenBalance from "./TokenBalance";
+
+const client = createThirdwebClient({
+  clientId: "58cdb2d58aaf66e7872b6eb45c258fdd", // Replace with your thirdweb client ID
+});
+
+
+const contract = getContract({ 
+  address: DAOIT,
+  chain: sepolia,
+  client,
+});
+
+
+console.log("Exports from constants.js:", { client, DAOIT });
 
 const DashboardPage = () => {
-  const proposals = [
-    {
-      id: 1,
-      descriptionTitle:
-        "Lorem ipsum dolor sit amet consectetur. Dolor lacus accumsan nec magna. SeLorci...",
-      title: "Lorem ipsum",
-      description: "This card is currently opened.",
-      avatar: "https://via.placeholder.com/32",
-      username: "0x4cee...b541",
-      votes: 355,
-      endDate: "Ends in 3 days",
-      status: "opened",
-    },
-    {
-      id: 2,
-      descriptionTitle:
-        "Lorem ipsum dolor sit amet consectetur. Dolor lacus accumsan nec magna. SeLorci...",
-      title: "Lorem ipsum",
-      description: "This card is currently pending.",
-      avatar: "https://via.placeholder.com/32",
-      username: "0x1234...abcd",
-      votes: 120,
-      endDate: "Ends in 5 hours",
-      status: "pending",
-    },
-    {
-      id: 3,
-      descriptionTitle:
-        "Lorem ipsum dolor sit amet consectetur. Dolor lacus accumsan nec magna. SeLorci...",
-      title: "Lorem ipsum",
-      description: "This card is currently closed.",
-      avatar: "https://via.placeholder.com/32",
-      username: "0x5678...efgh",
-      votes: 78,
-      endDate: "Ended 2 days ago",
-      status: "closed",
-    },
-    {
-      id: 5,
-      descriptionTitle:
-        "Lorem ipsum dolor sit amet consectetur. Dolor lacus accumsan nec magna. SeLorci...",
-      title: "Lorem ipsum",
-      description:
-        "Lorem ipsum dolor sit amet consectetur. Dolor lacus accumsan nec magna. SeLorci...",
-      avatar: "https://via.placeholder.com/32",
-      username: "0x4cee...b541",
-      votes: 355,
-      endDate: "Ends in 3 days",
-      status: "pending",
-    },
-    {
-      id: 6,
-      descriptionTitle:
-        "Lorem ipsum dolor sit amet consectetur. Dolor lacus accumsan nec magna. SeLorci...",
-      title: "Lorem ipsum",
-      description:
-        "Lorem ipsum dolor sit amet consectetur. Dolor lacus accumsan nec magna. SeLorci...",
-      avatar: "https://via.placeholder.com/32",
-      username: "0x4cee...b541",
-      votes: 355,
-      endDate: "Ends in 3 days",
-      status: "pending",
-    },
-    {
-      id: 7,
-      descriptionTitle:
-        "Lorem ipsum dolor sit amet consectetur. Dolor lacus accumsan nec magna. SeLorci...",
-      title: "Lorem ipsum",
-      description:
-        "Lorem ipsum dolor sit amet consectetur. Dolor lacus accumsan nec magna. SeLorci...",
-      avatar: "https://via.placeholder.com/32",
-      username: "0x4cee...b541",
-      votes: 355,
-      endDate: "Ends in 3 days",
-      status: "closed",
-    },
-  ];
-
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [selectedProposal, setSelectedProposal] = useState(null); // State for selected proposal
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+ 
+
+  // Fetch all proposals from the smart contract
+  const { data: proposalsData, isLoading, error } = useReadContract({
+    contract,
+    method: "function getAllProposals() external view returns (uint[] memory, string[] memory, string[] memory, uint256[] memory, uint256[] memory, uint256[] memory, uint256[] memory, bool[] memory, uint256[] memory, address[] memory)",
+  });
+
+  console.log("Proposals Data:", proposalsData);
+  console.log("Loading:", isLoading);
+  console.log("Error:", error);
+  console.log("Raw Proposals Data:", proposalsData);
+
+  // Map the fetched data to the structure expected by your component
+  const proposals = proposalsData
+  ? proposalsData[0].map((_, index) => ({
+      id: Number(proposalsData[0][index]), // Access the first element of the nested array
+      title: proposalsData[1][index] || "Untitled Proposal",
+      description: proposalsData[2][index] || "No description available.",
+      votes: Number(proposalsData[3][index]) || 0,
+      delegatedVoteCount: Number(proposalsData[4][index]) || 0,
+      yesVotes: Number(proposalsData[5][index]) || 0,
+      noVotes: Number(proposalsData[6][index]) || 0,
+      executed: proposalsData[7][index] || false,
+      deadline: proposalsData[8][index]
+        ? new Date(Number(proposalsData[8][index]) * 1000).toLocaleDateString()
+        : "No deadline",
+      proposer: proposalsData[9][index] || "Unknown",
+      status: proposalsData[7][index]
+        ? "executed"
+        : Number(proposalsData[8][index]) > Math.floor(Date.now() / 1000)
+        ? "opened"
+        : "closed",
+      avatar: "https://via.placeholder.com/32",
+      username: proposalsData[9][index]
+        ? proposalsData[9][index].slice(0, 6) + "..." + proposalsData[9][index].slice(-4)
+        : "Unknown",
+      endDate:
+        Number(proposalsData[8][index]) > Math.floor(Date.now() / 1000)
+          ? `Ends in ${Math.ceil(
+              (Number(proposalsData[8][index]) - Math.floor(Date.now() / 1000)) / 86400
+            )} days`
+          : "Ended",
+    }))
+  : [];
+
+  // Filter proposals based on search query and filter status
   const filteredProposals = proposals.filter((proposal) => {
     const matchesSearch = proposal.title
       .toLowerCase()
@@ -100,7 +91,43 @@ const DashboardPage = () => {
       filterStatus === "all" || proposal.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
+  
 
+  if (isLoading) {
+    return <div>Loading proposals...</div>;
+  }
+
+  if (error) {
+    return <div>Error fetching proposals: {error.message}</div>;
+  }
+
+  // Handle card click to open the modal
+  const handleCardClick = (proposal) => {
+    setSelectedProposal(proposal);
+    setIsModalOpen(true);
+  };
+
+  // Handle vote button click
+  const handleVote = () => {
+    // Implement your voting logic here
+    console.log("Voting for proposal:", selectedProposal.id);
+    // Close the modal after voting
+  };
+
+  const handleProposalClick = (proposal) => {
+    setSelectedProposal(proposal);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedProposal(null);
+    setIsModalOpen(false);
+  };
+
+  const handleVoteSuccess = () => {
+    // Optionally refresh the proposals data here
+  
+  };
   return (
     <div className="space-y-6 p-6 flex gap-20">
       <div className="pt-14">
@@ -126,9 +153,10 @@ const DashboardPage = () => {
             isVisible={isVisible}
             setIsVisible={setIsVisible}
           />
-          <button className="bg-[#D9D9D9] text-black px-4 py-2 rounded-md">
+          {/* <button className="bg-[#D9D9D9] text-black px-4 py-2 rounded-md">
             500 credits
-          </button>
+          </button> */}
+          <TokenBalance />
         </div>
 
         <FilterModal
@@ -137,10 +165,23 @@ const DashboardPage = () => {
           setFilterStatus={setFilterStatus}
           setIsFilterModalOpen={setIsFilterModalOpen}
         />
-
-        <ProposalList filteredProposals={filteredProposals} />
+        <div className="w-full">
+        {/* ... other components ... */}
+        <ProposalList 
+          filteredProposals={filteredProposals} 
+          onProposalClick={handleProposalClick}
+        />
+        {isModalOpen && (
+          <ProposalModal
+            proposal={selectedProposal}
+            onClose={handleCloseModal}
+            onVote={handleVoteSuccess}
+          />
+        )}
+      </div>
       </div>
     </div>
+    
   );
 };
 
