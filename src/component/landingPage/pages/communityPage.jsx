@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ReactSVG } from "react-svg";
+import arrow from "../../../assets/sideArrow.svg";
 import { IoIosArrowDown } from "react-icons/io";
-import { FAQs } from "./details";
+import { FAQs, JoinCommunity } from "./details";
 import logo from "../../../assets/daoit.svg";
 import help from "../../../assets/help.svg";
 import more from "../../../assets/more.svg";
@@ -31,24 +32,50 @@ const Community = () => {
       linkTo: "/sustainable-practices",
       linkLabel: "Learn more",
     },
+    {
+      title: "DAOit Impact on Sustainable Environmental Practices",
+      description:
+        "Blockchain-based climate management tools for tracking carbon emissions, Carbon Credits Trading, and educating users on sustainability practices.",
+      linkTo: "/sustainable-practices",
+      linkLabel: "Learn more",
+    }
   ];
   return (
     <div className=" flex flex-col items-center pt-8">
-      <section className="p-8 text-center ">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Join the Daoit Community
+      <section className="flex justify-center py-10 items-center text-center flex-col w-[1180px]">
+        <h1 className="text-2xl md:text-5xl font-bold text-[#102325]">
+          Building Together
         </h1>
-        <p className="mt-4 text-gray-600">
-          Looking to learn more about Daoit? No worries, get access to the best
-          resource available in order to get educated and become part of the
-          community.
+        <p className="mt-4 text-lg">
+          Join the Movement for Transparent and Collaborative Education. <br />
+          "Shape the future of learning through innovation and collective decision-making”.
         </p>
-        <button className="mt-6 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-md hover:bg-yellow-600">
-          Read Blog Post
-        </button>
+        <div className="mt-6 flex gap-4">
+          <Link to="/home">
+            <button className="bg-gradient-to-r from-[#F8B51C] to-[#FEE539] hover:bg-yellow-600 text-black text-md py-3 rounded shadow-md shadow-[#F8B51C33] w-[200px] h-[54px]">
+              Launch App
+            </button>
+          </Link>
+
+          <button className="flex rounded-[8px] justify-center items-center w-[200px] h-[54px] bg-gradient-to-br from-[#3E4141] to-[#F8B91E] p-[1px]">
+            <div className="flex items-center gap-4 justify-center bg-white h-full w-full rounded-[5px]">
+              <p className="text-black">Explore Proposal</p>
+              <ReactSVG src={arrow} />
+            </div>
+          </button>
+        </div>
+        <div className="mt-8">
+          {/* <img
+            src="/path/to/blockchain-image.png"
+            alt="Blockchain graphic"
+            className="mx-auto max-w-full"
+          /> */}
+        </div>
       </section>
 
-      <div className="max-w-6xl mx-auto p-4">
+      <JoinCommunity />
+
+      <div className="max-w-screen-2xl w-full mx-auto flex flex-col items-center py-20 px-10 justify-center">
         <div className="flex flex-wrap gap-4 mb-10">
           {navigationLinks.map(({ to, icon, label }) => (
             <Link
@@ -65,14 +92,14 @@ const Community = () => {
         </div>
 
         {/* Content Section */}
-        <div className="flex flex-wrap gap-6 text-left">
+        <div className="flex flex-col items-center text-center gap-6 w-[460px]">
           {infoCards.map(({ title, description, linkTo, linkLabel }) => (
-            <div key={title} className="flex-1 min-w-[500px]  p-6 ">
-              <h2 className="text-xl font-bold mb-4">{title}</h2>
+            <div key={title} className="flex flex-col w-full p-6 items-center">
+              <h2 className="text-xl font-bold mb-4 w-[410px]">{title}</h2>
               <p className="text-gray-600 mb-4">{description}</p>
               <Link
                 to={linkTo}
-                className="text-yellow-600 font-semibold hover:underline"
+                className="text-yellow-600 font-semibold border-b-[1px] w-fit border-[#F8B51C]"
               >
                 {linkLabel}
               </Link>

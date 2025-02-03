@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ReactSVG } from "react-svg";
-import logo from "../../../assets/logo.svg";
+import logo from "../../../../public/LandingPage/logo-dark.svg";
 import { FaGithub } from "react-icons/fa";
 import { FaDiscord, FaSquareXTwitter } from "react-icons/fa6";
 
@@ -40,9 +40,9 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="py-10 bg-gray-100 ">
+    <footer className="pt-20 pb-5 bg-[#1B1B1B] text-white">
       <div className="flex flex-col max-w-screen-2xl w-full gap-8 px-4 mx-auto  md:flex-row lg:px-10">
-        <div className="md:w-1/3">
+        <div className="md:w-[55%]">
           <Link to="/">
             <ReactSVG src={logo} className="w-20 h-20" />
           </Link>
@@ -68,16 +68,16 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-8 md:flex-row md:gap-20 md:w-2/3">
+        <div className="flex flex-col gap-8 md:flex-row md:gap-20 md:w-[45%]">
           {sections.map((section) => (
             <div key={section.title} className="flex-1">
-              <h3 className="mb-4 font-bold text-gray-800">{section.title}</h3>
+              <h3 className="mb-4 font-bold">{section.title}</h3>
               <ul className="space-y-2">
                 {section.links.map(({ label, path }) => (
                   <li key={label}>
                     <Link
                       to={path}
-                      className="text-sm text-gray-700 hover:text-black"
+                      className="text-sm"
                     >
                       {label}
                     </Link>

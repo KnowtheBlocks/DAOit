@@ -5,23 +5,43 @@ const FAQs = () => {
 
   const faqs = [
     {
-      question: "What is all DAOit about?",
+      question: "What is DAOIt?",
       answer: "Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. "
     },
     {
-      question: "Who is DAOit for?",
+      question: "How does DAOIt work?",
       answer: "Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. "
     },
     {
-      question: "Can I create a proposal on DAOit?",
+      question: "What role does AI play in DAOIt?",
       answer: "Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. "
     },
     {
-      question: "How do I connect my wallet?",
+      question: "Is DAOIt secure?",
       answer: "Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. "
     },
     {
-      question: "What is all DAOit about?",
+      question: "How does voting work?",
+      answer: "Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. "
+    },
+    {
+      question: "Do I need technical knowledge?",
+      answer: "Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. "
+    },
+    {
+      question: "Can students participate?",
+      answer: "Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. "
+    },
+    {
+      question: "How does DAOIt promote financial inclusion?",
+      answer: "Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. "
+    },
+    {
+      question: "What sustainability features does DAOIt have?",
+      answer: "Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. "
+    },
+    {
+      question: "How can I get started?",
       answer: "Looking to learn more about Doait? No worries, get access to the best resource available on order to get educated and become part of the community. "
     }
   ];
@@ -31,8 +51,8 @@ const FAQs = () => {
   };
 
   return (
-    <section className="w-full flex justify-center bg-[url('/LandingPage/FaqBg.svg')] bg-fixed bg-cover bg-top py-24">
-      <div className="px-10 max-w-screen-2xl w-full flex flex-col items-center bg-transparent">
+    <section className="w-full flex justify-center bg-[url('/LandingPage/FaqBg.svg')] bg-fixed bg-cover bg-top">
+      <div className="px-10 max-w-screen-2xl w-full flex flex-col items-center bg-transparent pt-16">
         <h2 className="text-[40px] font-bold mb-6">Frequently Asked Question</h2>
         <div className="space-y-4 w-full">
           {faqs.map((faq, index) => (
@@ -55,13 +75,10 @@ const FAQs = () => {
             </div>
           ))}
         </div>
-        <div className="mt-6">
-          <a
-            href="#"
-            className="text-yellow-500 hover:text-yellow-400 text-sm font-semibold"
-          >
-            See more →
-          </a>
+
+
+        <div className="mt-6 flex items-center w-full justify-center text-[26px] font-bold pt-20 pb-5">
+          <h4>"NOTE: The DOAit platform adheres to all data privacy laws of it&apos;s users"</h4>
         </div>
       </div>
     </section>

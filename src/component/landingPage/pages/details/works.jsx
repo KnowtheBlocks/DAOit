@@ -43,11 +43,11 @@ const HowItWorks = () => {
     <section className="flex justify-center">
       <div className="relative z-10 ">
         <div className="max-w-screen-2xl w-full px-10 flex flex-col items-center gap-y-5">
-          <div className="flex flex-col items-center text-center w-[800px] py-10 gap-y-4">
+          <div className="flex flex-col items-center text-center w-[790px] py-10 gap-y-4">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
               How <span className="text-[#BA8100]">DAOIt</span> Works
             </h2>
-            <p className="text-[#777777] text-lg">Join our Educational Decentralized Autonomous Organization (DAO)  to Learn, Collaborate, and Grow. We are Focus on  Empowering Students, Educators, and Administrators </p>
+            <p className="text-[#777777] text-lg">We've simplified the entire process, so you can focus on what truly matters—collaborating, voting, and shaping the future of education with ease.</p>
           </div>
 
 
