@@ -7,6 +7,7 @@ import { ReactSVG } from "react-svg";
 import coin from "../../../assets/coinbase.svg";
 import meta from "../../../assets/metamask.svg";
 import Phantom from "../../../assets/phantom.svg";
+import WalletButton from "../../utilies/WalletButton";
 
 function DashboardHome() {
   const cardContents = [
@@ -26,13 +27,14 @@ function DashboardHome() {
           teacher-student-led movement for future-ready learning
         </h1>
         <div className="mt-7">
-          <button
+          <WalletButton />
+          {/* <button
             onClick={() => setActiveModal("wallet")}
             className="px-4 py-2 bg-black text-white rounded-md "
           >
             Connect Wallet
-          </button>
-          <Modal
+          </button> */}
+          {/* <Modal
             isOpen={activeModal === "wallet"}
             onClose={closeModal}
             title="Choose a wallet"
@@ -61,7 +63,7 @@ function DashboardHome() {
                 </button>
               </Link>
             </div>
-          </Modal>
+          </Modal> */}
         </div>
       </div>
       <div className="flex flex-col md:flex-row justify-center items-center gap-6 mt-12 px-4">

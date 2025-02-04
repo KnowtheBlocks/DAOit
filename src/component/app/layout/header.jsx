@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import profile from "../../../assets/profile.png";
-import { useGlobalStore } from "../../../main";
+import { useGlobalStore } from "../../../store/globalStore"; // Fixed import path
 import { IoMdNotifications } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { ReactSVG } from "react-svg";
@@ -9,6 +9,19 @@ import logo from "../../../assets/logo-white.svg";
 import coin from "../../../assets/coinbase.svg";
 import meta from "../../../assets/metamask.svg";
 import Phantom from "../../../assets/phantom.svg";
+import { ConnectButton } from "thirdweb/react";
+import { createThirdwebClient } from "thirdweb";
+import { inAppWallet, createWallet } from "thirdweb/wallets";
+import { Sepolia } from "@thirdweb-dev/chains";
+
+// Thirdweb client setup
+const clientId = "68e77509b173a1cf92aff87441d10f5c";
+const client = createThirdwebClient({ clientId });
+
+const wallets = [
+  inAppWallet({ recommended: true }),
+  createWallet("io.metamask"),
+];
 
 function Header() {
   const [username, setUsername] = useState("Loading...");
@@ -36,8 +49,8 @@ function Header() {
   const closeModal = () => setActiveModal(null);
 
   return (
-    <div className="mx-20 mt-10 p-5 gap-10 rounded-lg  mb-8 bg-[#373434]">
-      {username && profile ? (
+    <div className="mx-20 mt-10 p-5 gap-10 rounded-lg mb-8 bg-[#373434]">
+      {username ? ( // Removed profile check
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={profile} alt="User" className="w-10 h-10 rounded-full" />
@@ -63,12 +76,12 @@ function Header() {
               <ReactSVG src={logo} width={100} height={100} />
             </Link>
           </div>
-          <button
-            onClick={() => setActiveModal("wallet")}
-            className="px-4 py-2 text-white bg-black rounded-md "
-          >
-            Connect Wallet
-          </button>
+          <ConnectButton 
+            client={client}
+            wallets={wallets}
+            theme="light"
+            modalSize="wide"
+          />
           {activeModal === "wallet" && (
             <Modal isOpen={true} onClose={closeModal} title="Choose a wallet">
               <div className="flex flex-col items-center justify-center">
@@ -99,7 +112,6 @@ function Header() {
           )}
         </div>
       )}
-
     </div>
   );
 }

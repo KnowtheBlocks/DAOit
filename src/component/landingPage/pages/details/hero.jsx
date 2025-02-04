@@ -23,7 +23,7 @@ const HeroSection = () => {
           Join our Educational Decentralized Autonomous Organization (DAO)  to Learn, Collaborate, and Grow. We are Focus on  Empowering Students, Educators, and Administrators In a Transparent, Open and Collaborative Decision-making Process.
           </p>
           <div className="mt-6 flex gap-4">
-            <Link to="/home">
+            <Link to="/app">
               <button className="bg-gradient-to-r from-[#F8B51C] to-[#FEE539] hover:bg-yellow-600 text-black text-md py-3 rounded shadow-md shadow-[#F8B51C33] w-[200px] h-[54px]">
                 Launch App
               </button>

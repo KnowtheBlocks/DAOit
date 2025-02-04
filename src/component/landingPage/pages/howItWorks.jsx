@@ -60,7 +60,7 @@ const Works = () => (
           Understand, Participate, and Lead with DAOIT. <br />See how our platform enables a new era of educational governance.
         </p>
         <div className="mt-6 flex gap-4">
-          <Link to="/home">
+          <Link to="/app">
             <button className="bg-gradient-to-r from-[#F8B51C] to-[#FEE539] hover:bg-yellow-600 text-black text-md py-3 rounded shadow-md shadow-[#F8B51C33] w-[200px] h-[54px]">
               Launch App
             </button>
@@ -92,7 +92,7 @@ const Works = () => (
 
           <div className="flex flex-wrap justify-between w-[90%] gap-10 py-5 relative">
             {cards.map((card, index) => (
-              <div className="w-[45%] h-[440px] z-10">
+              <div key={index} className="w-[45%] h-[440px] z-10">
                 <Card
                   key={index}
                   title={card.title}

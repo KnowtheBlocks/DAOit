@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Modal from "../../utilies/modal";
-import { useGlobalStore } from "../../../main";
+import { useGlobalStore } from "../../../store/globalStore";
 import ReactMarkdown from 'react-markdown';
 
 const ProposalPage = () => {

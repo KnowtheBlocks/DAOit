@@ -8,7 +8,7 @@ import Modal from "../../utilies/modal";
 import { TiTickOutline } from "react-icons/ti";
 // import { FaMagic } from "react-icons/fa";
 import { create } from "zustand";
-import { useGlobalStore } from "../../../main";
+import { useGlobalStore } from "../../../store/globalStore";
 import ReactMarkdown from "react-markdown";
 import { getContract, prepareContractCall, createThirdwebClient } from "thirdweb";
 import { useSendTransaction } from "thirdweb/react";

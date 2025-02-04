@@ -51,7 +51,7 @@ const Community = () => {
           "Shape the future of learning through innovation and collective decision-making”.
         </p>
         <div className="mt-6 flex gap-4">
-          <Link to="/home">
+          <Link to="/app">
             <button className="bg-gradient-to-r from-[#F8B51C] to-[#FEE539] hover:bg-yellow-600 text-black text-md py-3 rounded shadow-md shadow-[#F8B51C33] w-[200px] h-[54px]">
               Launch App
             </button>
